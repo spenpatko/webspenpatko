@@ -1,0 +1,3025 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Portal Resmi SMP Negeri 1 Harapan Bangsa — SPMB & Akademik</title>
+  <meta name="theme-color" content="#1E3A8A" />
+  <meta name="description" content="Portal Resmi Sekolah Menengah Pertama — Informasi Profil, Berita, SPMB Online, Galeri Kegiatan, dan Portal Akademik Siswa & Guru." />
+
+  <!-- PWA Manifest via Data URI (1-File Mandate) -->
+  <link rel="manifest" href='data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Portal%20SMP%20Resmi%22%2C%22short_name%22%3A%22SMP%20Portal%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFFFFF%22%2C%22theme_color%22%3A%22%231E3A8A%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Butf8%2C%253Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20192%20192%27%253E%253Crect%20width%3D%27192%27%20height%3D%27192%27%20rx%3D%2736%27%20fill%3D%27%25231E3A8A%27%2F%253E%253Ctext%20x%3D%2750%2525%27%20y%3D%2756%2525%27%20dominant-baseline%3D%27middle%27%20text-anchor%3D%27middle%27%20font-family%3D%27sans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%2768%27%20fill%3D%27white%27%253ESMP%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D' />
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Full-Screen App Shell menutupi elemen bawaan Blogger tanpa edit XML */
+    #smp-app-root {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      background-color: #FFFFFF;
+      color: #334155;
+      font-family: 'Inter', sans-serif;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Pola Titik Peta Dunia Halus untuk Seksi Galeri Gelap */
+    .dark-dotted-map {
+      background-color: #111827;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.25px, transparent 1.25px);
+      background-size: 16px 16px;
+    }
+
+    /* Animasi Geser Halus pada Hero Slider */
+    .hero-slider-track {
+      display: flex;
+      transition: transform 0.75s cubic-bezier(0.25, 1, 0.5, 1);
+      will-change: transform;
+    }
+
+    .hero-slide-item {
+      min-width: 100%;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    /* Bayangan Teks Poster Banner */
+    .banner-text-shadow {
+      text-shadow: 0 3px 14px rgba(15, 23, 42, 0.55);
+    }
+
+    /* Custom Scrollbar */
+    #smp-app-root::-webkit-scrollbar {
+      width: 7px;
+    }
+    #smp-app-root::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    #smp-app-root::-webkit-scrollbar-thumb {
+      background: #94A3B8;
+      border-radius: 9999px;
+    }
+    #smp-app-root::-webkit-scrollbar-thumb:hover {
+      background: #64748B;
+    }
+  </style>
+</head>
+<body>
+  <div id="smp-app-root"></div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    // =========================================================================
+    // KONFIGURASI APLIKASI (SAKLAR DEPLOYMENT)
+    // =========================================================================
+    const IS_PREVIEW = false; // Ubah menjadi false SAAT DEPLOY agar mode preview & data dummy hilang dan terhubung 100% ke Supabase
+    const SUPABASE_URL = "https://vtwqqyjybfvabbptcsqj.supabase.co/rest/v1/";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0d3FxeWp5YmZ2YWJicHRjc3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ3NzQ1MDYsImV4cCI6MjExMDM1MDUwNn0.hQhI_gGJe2Fhfdc-HzHHNC-bSoIKVBXpbYbPrQxl0PU";
+
+    let supabase = null;
+    if (!IS_PREVIEW) {
+      supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
+    // =========================================================================
+    // SERVICE WORKER DINAMIS (PWA 1 FILE)
+    // =========================================================================
+    function initDynamicPWA() {
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          self.addEventListener('install', () => self.skipWaiting());
+          self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+          });
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+      }
+    }
+    initDynamicPWA();
+
+    // =========================================================================
+    // DATA DUMMY MINIMALIS (HANYA AKTIF JIKA IS_PREVIEW === true)
+    // Maksimal 1-2 baris per tabel sesuai aturan ketat
+    // =========================================================================
+    const PREVIEW_DATA = IS_PREVIEW ? {
+      profil: {
+        id: 'prev-profil-1',
+        nama_sekolah: 'SMP NEGERI 1 HARAPAN BANGSA',
+        npsn: '20261234',
+        akreditasi: 'A (Unggul)',
+        alamat: 'Jl. Pendidikan No. 45, Kec. Nusantara, Kota Harapan 75124',
+        kepala_sekolah: 'Drs. H. Ahmad Fauzi, M.Pd.',
+        sambutan_kepsek: 'Selamat datang di portal digital resmi sekolah kami. Kami berkomitmen mencetak generasi SMP yang cerdas, berkarakter Pancasila, dan berdaya saing global.',
+        visi: 'Mewujudkan SMP Unggul Berkarakter Profil Pelajar Pancasila yang Berprestasi dalam IPTEK, IMTAQ, serta Berwawasan Lingkungan.',
+        misi: '1. Menyelenggarakan pembelajaran aktif, kreatif, dan berbasis digital.\n2. Mengembangkan bakat & minat melalui ekstrakurikuler unggulan.\n3. Membudayakan disiplin, literasi, dan peduli lingkungan (Adiwiyata).',
+        tahun_ajaran: '2026/2027',
+        status_spmb: true
+      },
+      pengguna: [
+        {
+          id: 'prev-user-1',
+          username: '0098765432',
+          password: '123',
+          nama_lengkap: 'Ananda Putri Ramadhani',
+          peran: 'siswa',
+          kelas_atau_mapel: 'VII-A',
+          aktif: true
+        },
+        {
+          id: 'prev-user-2',
+          username: '1985041201',
+          password: '123',
+          nama_lengkap: 'Budi Santoso, S.Pd.',
+          peran: 'guru',
+          kelas_atau_mapel: 'Matematika',
+          aktif: true
+        }
+      ],
+      berita: [
+        {
+          id: 'prev-news-1',
+          judul: 'PENERIMAAN MURID BARU (SPMB) TAHUN AJARAN 2026/2027',
+          kategori: 'Pengumuman',
+          ringkasan: 'SOSIALISASI & PENDAFTARAN SPMB JENJANG SMP • JALUR DOMISILI • JALUR AFIRMASI • JALUR PRESTASI • JALUR MUTASI. Daftarkan dirimu secara daring melalui menu SPMB Online.',
+          isi_konten: 'Panitia Sistem Penerimaan Murid Baru (SPMB) menginformasikan bahwa pendaftaran tahun ajaran baru telah dibuka secara daring melalui portal resmi sekolah. Calon murid baru dari jenjang SD/MI dapat memilih Jalur Domisili, Jalur Afirmasi, Jalur Prestasi, atau Jalur Mutasi dengan menyiapkan NISN dan nilai rata-rata rapor.',
+          gambar_url: '',
+          tanggal_kegiatan: '2026-05-03',
+          penulis: 'Panitia SPMB'
+        },
+        {
+          id: 'prev-news-2',
+          judul: 'SUKSES OLIMPIADE SAINS NASIONAL (OSN) & KEGIATAN ADIWIYATA SMP',
+          kategori: 'Prestasi',
+          ringkasan: 'Tim Olimpiade Sains dan Kader Adiwiyata SMP berhasil meraih penghargaan tingkat kota dalam ajang kompetisi akademik dan sekolah berbudaya lingkungan.',
+          isi_konten: 'Selamat kepada seluruh peserta didik dan guru pembimbing atas prestasi membanggakan pada ajang Olimpiade Sains Nasional (OSN) bidang IPA dan Matematika serta penghargaan Sekolah Adiwiyata Tingkat Kota.',
+          gambar_url: '',
+          tanggal_kegiatan: '2026-04-25',
+          penulis: 'Humas Sekolah'
+        }
+      ],
+      spmb: [
+        {
+          id: 'prev-spmb-1',
+          no_pendaftaran: 'SPMB-2026-001',
+          nisn: '0134567890',
+          nama_lengkap: 'Rafi Pratama Putra',
+          jenis_kelamin: 'Laki-laki',
+          asal_sd: 'SDN 01 Tunas Mekar',
+          jalur_pendaftaran: 'Domisili',
+          nilai_rata_sd: 88.5,
+          no_hp_ortu: '081234567890',
+          alamat: 'Jl. Melati Indah Blok B2',
+          status_seleksi: 'Diterima',
+          catatan_admin: 'Berkas lengkap dan memenuhi kuota jalur domisili.'
+        }
+      ],
+      jadwal_materi: [
+        {
+          id: 'prev-jm-1',
+          tipe: 'Jadwal',
+          kelas: 'VII',
+          hari: 'Senin',
+          jam_pelajaran: '07:30 - 09:00',
+          mata_pelajaran: 'Matematika',
+          nama_guru: 'Budi Santoso, S.Pd.',
+          judul_materi: 'Bilangan Bulat & Pecahan',
+          deskripsi_atau_link: 'Ruang Kelas VII-A'
+        },
+        {
+          id: 'prev-jm-2',
+          tipe: 'Materi',
+          kelas: 'VII',
+          hari: 'Senin',
+          jam_pelajaran: 'E-Learning',
+          mata_pelajaran: 'Matematika',
+          nama_guru: 'Budi Santoso, S.Pd.',
+          judul_materi: 'Modul Latihan Operasi Bilangan Bulat',
+          deskripsi_atau_link: 'Kerjakan latihan soal halaman 12-14 pada buku paket dan kumpulkan pada pertemuan berikutnya.'
+        }
+      ],
+      nilai: [
+        {
+          id: 'prev-nilai-1',
+          siswa_id: 'prev-user-1',
+          mata_pelajaran: 'Matematika',
+          semester: 'Ganjil',
+          nilai_tugas: 90,
+          nilai_uts: 86,
+          nilai_uas: 88,
+          predikat: 'A',
+          catatan_guru: 'Sangat baik dalam pemecahan soal aljabar.'
+        }
+      ]
+    } : null;
+
+    // =========================================================================
+    // STATE APLIKASI UTAMA
+    // =========================================================================
+    const state = {
+      activeMenu: 'beranda',
+      mobileMenuOpen: false,
+      currentSlide: 0,
+      isCarouselPaused: false,
+      loading: false,
+      currentUser: null,
+      deferredInstallPrompt: null,
+      toast: null,
+
+      // Modals
+      showLoginModal: false,
+      loginTab: 'warga',
+      selectedBeritaModal: null,
+      lastSpmbReceipt: null,
+
+      // Filters & Sub-tabs
+      beritaFilter: 'Semua',
+      beritaSearch: '',
+      guruSearch: '',
+      spmbTab: 'daftar',
+      spmbCekQuery: '',
+      spmbCekResult: undefined,
+      akademikTab: 'jadwal',
+      kelasFilter: 'VII',
+      adminTab: 'profil',
+      adminSpmbFilter: 'Semua',
+
+      // Data Stores
+      profil: IS_PREVIEW ? structuredClone(PREVIEW_DATA.profil) : {
+        id: null,
+        nama_sekolah: 'SMP NEGERI 1 HARAPAN BANGSA',
+        npsn: '-',
+        akreditasi: 'Terakreditasi A',
+        alamat: 'Alamat sekolah belum diatur oleh Admin',
+        kepala_sekolah: '-',
+        sambutan_kepsek: 'Silakan masuk sebagai Admin untuk mengatur profil resmi sekolah.',
+        visi: 'Mewujudkan SMP Unggul Berkarakter Profil Pelajar Pancasila dan Berprestasi.',
+        misi: '1. Menyelenggarakan pembelajaran aktif dan inovatif.',
+        tahun_ajaran: '2026/2027',
+        status_spmb: true
+      },
+      pengguna: IS_PREVIEW ? structuredClone(PREVIEW_DATA.pengguna) : [],
+      berita: IS_PREVIEW ? structuredClone(PREVIEW_DATA.berita) : [],
+      spmb: IS_PREVIEW ? structuredClone(PREVIEW_DATA.spmb) : [],
+      jadwal_materi: IS_PREVIEW ? structuredClone(PREVIEW_DATA.jadwal_materi) : [],
+      nilai: IS_PREVIEW ? structuredClone(PREVIEW_DATA.nilai) : []
+    };
+
+    // =========================================================================
+    // HELPER FUNCTIONS
+    // =========================================================================
+    function showToast(message, type = 'success') {
+      state.toast = { message, type };
+      render();
+      setTimeout(() => {
+        if (state.toast && state.toast.message === message) {
+          state.toast = null;
+          render();
+        }
+      }, 3800);
+    }
+
+    function escapeHTML(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function formatTanggalIndo(dateStr) {
+      if (!dateStr) return 'Info Terbaru';
+      try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      } catch (_) {
+        return dateStr;
+      }
+    }
+
+    function formatBulanTanggal(dateStr) {
+      if (!dateStr) return { bln: 'INFO', tgl: 'SMP' };
+      try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return { bln: 'INFO', tgl: 'SMP' };
+        const bln = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+        const tgl = String(d.getDate()).padStart(2, '0');
+        return { bln, tgl };
+      } catch (_) {
+        return { bln: 'INFO', tgl: 'SMP' };
+      }
+    }
+
+    function hitungPredikat(rata) {
+      const n = Number(rata) || 0;
+      if (n >= 90) return 'A';
+      if (n >= 80) return 'B';
+      if (n >= 70) return 'C';
+      return 'D';
+    }
+
+    function generateNoSpmb() {
+      const year = new Date().getFullYear();
+      const rand = Math.floor(1000 + Math.random() * 9000);
+      return `SPMB-${year}-${rand}`;
+    }
+
+    // =========================================================================
+    // KONTROL SLIDER GAMBAR OTOMATIS (BERGESER DENGAN SENDIRINYA)
+    // =========================================================================
+    const TOTAL_SLIDES = 3;
+
+    function updateCarouselDOM() {
+      const track = document.getElementById('hero-slider-track');
+      if (track) {
+        track.style.transform = `translateX(-${state.currentSlide * 100}%)`;
+      }
+      document.querySelectorAll('[data-slide-dot]').forEach((dot) => {
+        const idx = Number(dot.dataset.slideDot);
+        if (idx === state.currentSlide) {
+          dot.className = 'w-7 h-2.5 rounded-full bg-white shadow transition-all cursor-pointer';
+        } else {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all cursor-pointer';
+        }
+      });
+    }
+
+    function goToSlide(index) {
+      state.currentSlide = (index + TOTAL_SLIDES) % TOTAL_SLIDES;
+      updateCarouselDOM();
+    }
+
+    setInterval(() => {
+      if (
+        state.activeMenu === 'beranda' &&
+        !state.isCarouselPaused &&
+        !state.showLoginModal &&
+        !state.selectedBeritaModal
+      ) {
+        goToSlide(state.currentSlide + 1);
+      }
+    }, 4500);
+
+    // =========================================================================
+    // SINKRONISASI DATA SUPABASE (SAAT IS_PREVIEW === false)
+    // =========================================================================
+    async function loadAllSupabaseData() {
+      if (IS_PREVIEW || !supabase) return;
+      state.loading = true;
+      render();
+
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData?.session?.user) {
+          state.currentUser = {
+            role: 'admin',
+            id: sessionData.session.user.id,
+            username: sessionData.session.user.email,
+            nama_lengkap: 'Administrator Sekolah',
+            kelas_atau_mapel: 'Admin Sistem'
+          };
+        } else {
+          const savedWarga = sessionStorage.getItem('smp_warga_session');
+          if (savedWarga) {
+            try {
+              state.currentUser = JSON.parse(savedWarga);
+            } catch (_) {
+              sessionStorage.removeItem('smp_warga_session');
+            }
+          }
+        }
+
+        const [resProfil, resPengguna, resBerita, resSpmb, resJM, resNilai] = await Promise.all([
+          supabase.from('profil_sekolah').select('*').limit(1).maybeSingle(),
+          supabase.from('pengguna_sekolah').select('*').order('nama_lengkap', { ascending: true }),
+          supabase.from('berita_agenda').select('*').order('created_at', { ascending: false }),
+          supabase.from('pendaftaran_spmb').select('*').order('created_at', { ascending: false }),
+          supabase.from('jadwal_materi').select('*').order('created_at', { ascending: false }),
+          supabase.from('nilai_akademik').select('*').order('updated_at', { ascending: false })
+        ]);
+
+        if (resProfil.data) state.profil = resProfil.data;
+        if (resPengguna.data) state.pengguna = resPengguna.data;
+        if (resBerita.data) state.berita = resBerita.data;
+        if (resSpmb.data) state.spmb = resSpmb.data;
+        if (resJM.data) state.jadwal_materi = resJM.data;
+        if (resNilai.data) state.nilai = resNilai.data;
+      } catch (err) {
+        console.error('Gagal memuat data Supabase:', err);
+        showToast('Gagal terhubung ke database Supabase. Periksa URL & Anon Key.', 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    // =========================================================================
+    // AUTENTIKASI HYBRID
+    // =========================================================================
+    async function handleAdminLogin(email, password) {
+      if (IS_PREVIEW) {
+        state.currentUser = {
+          role: 'admin',
+          id: 'prev-admin',
+          username: email || 'admin@smp.sch.id',
+          nama_lengkap: 'Admin Sekolah (Preview)',
+          kelas_atau_mapel: 'Operator Utama'
+        };
+        state.showLoginModal = false;
+        state.activeMenu = 'admin';
+        showToast('Berhasil masuk sebagai Admin (Mode Preview)');
+        return;
+      }
+
+      try {
+        state.loading = true;
+        render();
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+
+        sessionStorage.removeItem('smp_warga_session');
+        state.currentUser = {
+          role: 'admin',
+          id: data.user.id,
+          username: data.user.email,
+          nama_lengkap: 'Administrator Sekolah',
+          kelas_atau_mapel: 'Admin Sistem'
+        };
+        state.showLoginModal = false;
+        state.activeMenu = 'admin';
+        showToast('Selamat datang kembali, Admin Sekolah!');
+        await loadAllSupabaseData();
+      } catch (err) {
+        showToast('Login Admin gagal: ' + (err.message || 'Email atau password salah'), 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function handleWargaLogin(username, password) {
+      if (IS_PREVIEW) {
+        const found = state.pengguna.find(
+          (u) => u.username === username && u.password === password && u.aktif
+        );
+        if (!found) {
+          showToast('NISN/NIP atau Password tidak cocok (Mode Preview)', 'error');
+          return;
+        }
+        state.currentUser = {
+          role: found.peran,
+          id: found.id,
+          username: found.username,
+          nama_lengkap: found.nama_lengkap,
+          kelas_atau_mapel: found.kelas_atau_mapel
+        };
+        state.showLoginModal = false;
+        state.activeMenu = 'akademik';
+        showToast(`Berhasil masuk sebagai ${found.nama_lengkap}`);
+        return;
+      }
+
+      try {
+        state.loading = true;
+        render();
+        const { data, error } = await supabase
+          .from('pengguna_sekolah')
+          .select('*')
+          .eq('username', username.trim())
+          .eq('password', password.trim())
+          .eq('aktif', true)
+          .maybeSingle();
+
+        if (error) throw error;
+        if (!data) {
+          showToast('NISN/NIP atau Password salah, atau akun dinonaktifkan.', 'error');
+          return;
+        }
+
+        state.currentUser = {
+          role: data.peran,
+          id: data.id,
+          username: data.username,
+          nama_lengkap: data.nama_lengkap,
+          kelas_atau_mapel: data.kelas_atau_mapel
+        };
+        sessionStorage.setItem('smp_warga_session', JSON.stringify(state.currentUser));
+        state.showLoginModal = false;
+        state.activeMenu = 'akademik';
+        showToast(`Selamat datang, ${data.nama_lengkap}!`);
+      } catch (err) {
+        showToast('Terjadi kesalahan saat login: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function handleLogout() {
+      if (!IS_PREVIEW && supabase && state.currentUser?.role === 'admin') {
+        await supabase.auth.signOut();
+      }
+      sessionStorage.removeItem('smp_warga_session');
+      state.currentUser = null;
+      if (state.activeMenu === 'admin') state.activeMenu = 'beranda';
+      showToast('Anda telah keluar dari akun.');
+    }
+
+    // =========================================================================
+    // OPERASI CRUD (MENDUKUNG MODE PREVIEW LOKAL & SUPABASE REAL-TIME)
+    // =========================================================================
+    async function saveProfilSekolah(payload) {
+      if (IS_PREVIEW) {
+        state.profil = { ...state.profil, ...payload };
+        showToast('Profil sekolah diperbarui (Mode Preview)');
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        if (state.profil?.id) {
+          const { data, error } = await supabase
+            .from('profil_sekolah')
+            .update({ ...payload, updated_at: new Date().toISOString() })
+            .eq('id', state.profil.id)
+            .select()
+            .single();
+          if (error) throw error;
+          state.profil = data;
+        } else {
+          const { data, error } = await supabase
+            .from('profil_sekolah')
+            .insert([payload])
+            .select()
+            .single();
+          if (error) throw error;
+          state.profil = data;
+        }
+        showToast('Profil sekolah & pengaturan SPMB berhasil disimpan!');
+      } catch (err) {
+        showToast('Gagal menyimpan profil: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function submitPendaftaranSpmb(formObj) {
+      const noDaftar = generateNoSpmb();
+      const newRecord = {
+        no_pendaftaran: noDaftar,
+        nisn: formObj.nisn.trim(),
+        nama_lengkap: formObj.nama_lengkap.trim(),
+        jenis_kelamin: formObj.jenis_kelamin,
+        asal_sd: formObj.asal_sd.trim(),
+        jalur_pendaftaran: formObj.jalur_pendaftaran,
+        nilai_rata_sd: parseFloat(formObj.nilai_rata_sd) || 0,
+        no_hp_ortu: formObj.no_hp_ortu.trim(),
+        alamat: formObj.alamat.trim(),
+        status_seleksi: 'Menunggu Verifikasi',
+        catatan_admin: 'Pendaftaran berhasil diterima sistem. Menunggu verifikasi berkas oleh panitia.'
+      };
+
+      if (IS_PREVIEW) {
+        const localRec = { id: 'spmb-' + Date.now(), ...newRecord };
+        state.spmb.unshift(localRec);
+        state.lastSpmbReceipt = localRec;
+        showToast('Pendaftaran SPMB berhasil dikirim!');
+        return;
+      }
+
+      try {
+        state.loading = true;
+        render();
+        const { data, error } = await supabase
+          .from('pendaftaran_spmb')
+          .insert([newRecord])
+          .select()
+          .single();
+        if (error) throw error;
+        state.spmb.unshift(data);
+        state.lastSpmbReceipt = data;
+        showToast('Pendaftaran SPMB berhasil tercatat di database!');
+      } catch (err) {
+        showToast('Gagal mengirim formulir SPMB: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function cekStatusSpmb(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        showToast('Masukkan Nomor Pendaftaran atau NISN terlebih dahulu.', 'error');
+        return;
+      }
+
+      if (IS_PREVIEW) {
+        const found = state.spmb.find(
+          (item) =>
+            item.no_pendaftaran.toLowerCase() === q ||
+            item.nisn.toLowerCase() === q
+        );
+        state.spmbCekResult = found || null;
+        render();
+        return;
+      }
+
+      try {
+        state.loading = true;
+        render();
+        const { data, error } = await supabase
+          .from('pendaftaran_spmb')
+          .select('*')
+          .or(`no_pendaftaran.ilike.${q},nisn.eq.${q}`)
+          .limit(1)
+          .maybeSingle();
+        if (error) throw error;
+        state.spmbCekResult = data || null;
+      } catch (err) {
+        showToast('Gagal memeriksa status SPMB: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function updateStatusSpmb(id, status_seleksi, catatan_admin) {
+      if (IS_PREVIEW) {
+        state.spmb = state.spmb.map((s) =>
+          s.id === id ? { ...s, status_seleksi, catatan_admin } : s
+        );
+        showToast('Status seleksi SPMB diperbarui!');
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        const { data, error } = await supabase
+          .from('pendaftaran_spmb')
+          .update({ status_seleksi, catatan_admin })
+          .eq('id', id)
+          .select()
+          .single();
+        if (error) throw error;
+        state.spmb = state.spmb.map((s) => (s.id === id ? data : s));
+        showToast('Status seleksi SPMB berhasil diperbarui!');
+      } catch (err) {
+        showToast('Gagal memperbarui status SPMB: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function deleteSpmb(id) {
+      if (IS_PREVIEW) {
+        state.spmb = state.spmb.filter((s) => s.id !== id);
+        showToast('Data pendaftar SPMB dihapus.');
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        const { error } = await supabase.from('pendaftaran_spmb').delete().eq('id', id);
+        if (error) throw error;
+        state.spmb = state.spmb.filter((s) => s.id !== id);
+        showToast('Data pendaftar SPMB berhasil dihapus.');
+      } catch (err) {
+        showToast('Gagal menghapus data SPMB: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function addBerita(payload) {
+      if (IS_PREVIEW) {
+        state.berita.unshift({ id: 'news-' + Date.now(), ...payload });
+        showToast('Berita / Agenda berhasil diterbitkan!');
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        const { data, error } = await supabase
+          .from('berita_agenda')
+          .insert([payload])
+          .select()
+          .single();
+        if (error) throw error;
+        state.berita.unshift(data);
+        showToast('Berita / Agenda berhasil dipublikasikan!');
+      } catch (err) {
+        showToast('Gagal menambah berita: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function deleteBerita(id) {
+      if (IS_PREVIEW) {
+        state.berita = state.berita.filter((b) => b.id !== id);
+        showToast('Berita dihapus.');
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        const { error } = await supabase.from('berita_agenda').delete().eq('id', id);
+        if (error) throw error;
+        state.berita = state.berita.filter((b) => b.id !== id);
+        showToast('Berita berhasil dihapus.');
+      } catch (err) {
+        showToast('Gagal menghapus berita: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function addPengguna(payload) {
+      if (IS_PREVIEW) {
+        state.pengguna.push({ id: 'usr-' + Date.now(), ...payload, aktif: true });
+        showToast('Akun warga sekolah berhasil ditambahkan!');
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        const { data, error } = await supabase
+          .from('pengguna_sekolah')
+          .insert([{ ...payload, aktif: true }])
+          .select()
+          .single();
+        if (error) throw error;
+        state.pengguna.push(data);
+        showToast('Akun Siswa/Guru berhasil disimpan ke Supabase!');
+      } catch (err) {
+        showToast('Gagal menambah akun: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function toggleAktifPengguna(id, currentStatus) {
+      if (IS_PREVIEW) {
+        state.pengguna = state.pengguna.map((u) =>
+          u.id === id ? { ...u, aktif: !currentStatus } : u
+        );
+        showToast('Status aktif akun diubah.');
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        const { data, error } = await supabase
+          .from('pengguna_sekolah')
+          .update({ aktif: !currentStatus })
+          .eq('id', id)
+          .select()
+          .single();
+        if (error) throw error;
+        state.pengguna = state.pengguna.map((u) => (u.id === id ? data : u));
+        showToast('Status akun berhasil diperbarui.');
+      } catch (err) {
+        showToast('Gagal mengubah status akun: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function deletePengguna(id) {
+      if (IS_PREVIEW) {
+        state.pengguna = state.pengguna.filter((u) => u.id !== id);
+        showToast('Akun dihapus.');
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        const { error } = await supabase.from('pengguna_sekolah').delete().eq('id', id);
+        if (error) throw error;
+        state.pengguna = state.pengguna.filter((u) => u.id !== id);
+        showToast('Akun berhasil dihapus.');
+      } catch (err) {
+        showToast('Gagal menghapus akun: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function addJadwalMateri(payload) {
+      if (IS_PREVIEW) {
+        state.jadwal_materi.unshift({ id: 'jm-' + Date.now(), ...payload });
+        showToast(`${payload.tipe} berhasil ditambahkan!`);
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        const { data, error } = await supabase
+          .from('jadwal_materi')
+          .insert([payload])
+          .select()
+          .single();
+        if (error) throw error;
+        state.jadwal_materi.unshift(data);
+        showToast(`${payload.tipe} berhasil disimpan!`);
+      } catch (err) {
+        showToast('Gagal menyimpan jadwal/materi: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function deleteJadwalMateri(id) {
+      if (IS_PREVIEW) {
+        state.jadwal_materi = state.jadwal_materi.filter((j) => j.id !== id);
+        showToast('Item berhasil dihapus.');
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        const { error } = await supabase.from('jadwal_materi').delete().eq('id', id);
+        if (error) throw error;
+        state.jadwal_materi = state.jadwal_materi.filter((j) => j.id !== id);
+        showToast('Item berhasil dihapus.');
+      } catch (err) {
+        showToast('Gagal menghapus item: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function saveNilaiAkademik(payload) {
+      const avg = ((Number(payload.nilai_tugas) + Number(payload.nilai_uts) + Number(payload.nilai_uas)) / 3).toFixed(1);
+      const record = {
+        ...payload,
+        nilai_tugas: Number(payload.nilai_tugas),
+        nilai_uts: Number(payload.nilai_uts),
+        nilai_uas: Number(payload.nilai_uas),
+        predikat: hitungPredikat(avg)
+      };
+
+      if (IS_PREVIEW) {
+        state.nilai.unshift({ id: 'nil-' + Date.now(), ...record });
+        showToast('Nilai siswa berhasil disimpan!');
+        return;
+      }
+
+      try {
+        state.loading = true;
+        render();
+        const { data, error } = await supabase
+          .from('nilai_akademik')
+          .insert([{ ...record, updated_at: new Date().toISOString() }])
+          .select()
+          .single();
+        if (error) throw error;
+        state.nilai.unshift(data);
+        showToast('Nilai akademik berhasil dicatat ke database!');
+      } catch (err) {
+        showToast('Gagal menyimpan nilai: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    async function deleteNilaiAkademik(id) {
+      if (IS_PREVIEW) {
+        state.nilai = state.nilai.filter((n) => n.id !== id);
+        showToast('Data nilai dihapus.');
+        return;
+      }
+      try {
+        state.loading = true;
+        render();
+        const { error } = await supabase.from('nilai_akademik').delete().eq('id', id);
+        if (error) throw error;
+        state.nilai = state.nilai.filter((n) => n.id !== id);
+        showToast('Data nilai berhasil dihapus.');
+      } catch (err) {
+        showToast('Gagal menghapus nilai: ' + err.message, 'error');
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    // =========================================================================
+    // KOMPONEN UI & RENDER HALAMAN
+    // =========================================================================
+    function renderBadgeStatusSpmb(status) {
+      const map = {
+        'Diterima': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        'Menunggu Verifikasi': 'bg-amber-50 text-amber-700 border-amber-200',
+        'Cadangan': 'bg-blue-50 text-blue-700 border-blue-200',
+        'Ditolak': 'bg-rose-50 text-rose-700 border-rose-200'
+      };
+      const cls = map[status] || 'bg-slate-100 text-slate-700 border-slate-200';
+      return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${cls}">${escapeHTML(status)}</span>`;
+    }
+
+    function renderKategoriBadge(kat) {
+      const map = {
+        'Berita': 'bg-blue-50 text-blue-700 border-blue-200',
+        'Pengumuman': 'bg-amber-50 text-amber-700 border-amber-200',
+        'Prestasi': 'bg-teal-50 text-teal-700 border-teal-200',
+        'Agenda': 'bg-indigo-50 text-indigo-700 border-indigo-200'
+      };
+      const cls = map[kat] || 'bg-slate-100 text-slate-700 border-slate-200';
+      return `<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold border ${cls}">${escapeHTML(kat)}</span>`;
+    }
+
+    // =========================================================================
+    // SLIDER BANNER OTOMATIS (MIRIP REFERENSI GAMBAR)
+    // =========================================================================
+    function renderHeroCarousel() {
+      const slides = [
+        {
+          // Slide 1: Banner SPMB & Gedung Sekolah
+          bgClass: 'bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#1E3A8A]',
+          badge1: `AKREDITASI ${escapeHTML(state.profil.akreditasi).toUpperCase()}`,
+          badge2: 'SEKOLAH ADIWIYATA',
+          kicker: `SISTEM PENERIMAAN MURID BARU TA ${escapeHTML(state.profil.tahun_ajaran)}`,
+          titleLine1: 'Daftarkan Dirimu',
+          titleLine2: 'Menjadi Siswa/i',
+          schoolHighlight: escapeHTML(state.profil.nama_sekolah),
+          btnText: 'DAFTAR SPMB SEKARANG',
+          btnNav: 'spmb',
+          illustrationSvg: `
+            <svg viewBox="0 0 420 260" class="w-full h-full object-contain drop-shadow-xl">
+              <defs>
+                <linearGradient id="bldRoof" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#1E3A8A"/>
+                  <stop offset="100%" stop-color="#0284C7"/>
+                </linearGradient>
+                <linearGradient id="bldWall" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FFFFFF"/>
+                  <stop offset="100%" stop-color="#E2E8F0"/>
+                </linearGradient>
+              </defs>
+              <!-- Langit & Awan -->
+              <circle cx="340" cy="52" r="28" fill="#FDE047" opacity="0.9"/>
+              <path d="M55 62 Q70 42 90 55 Q110 40 128 58 Q142 62 135 74 L52 74 Q42 68 55 62 Z" fill="white" opacity="0.6"/>
+              <!-- Gedung Utama Sekolah -->
+              <polygon points="80,105 210,55 340,105" fill="url(#bldRoof)"/>
+              <rect x="92" y="105" width="236" height="115" rx="4" fill="url(#bldWall)"/>
+              <!-- Pilar & Jendela -->
+              <rect x="112" y="122" width="34" height="28" rx="3" fill="#38BDF8"/>
+              <rect x="162" y="122" width="34" height="28" rx="3" fill="#38BDF8"/>
+              <rect x="224" y="122" width="34" height="28" rx="3" fill="#38BDF8"/>
+              <rect x="274" y="122" width="34" height="28" rx="3" fill="#38BDF8"/>
+              <!-- Pintu Gerbang Tengah -->
+              <rect x="185" y="165" width="50" height="55" rx="4" fill="#1E3A8A"/>
+              <rect x="112" y="168" width="34" height="32" rx="3" fill="#7DD3FC"/>
+              <rect x="274" y="168" width="34" height="32" rx="3" fill="#7DD3FC"/>
+              <!-- Tiang Bendera -->
+              <line x1="48" y1="85" x2="48" y2="220" stroke="#F8FAFC" stroke-width="4"/>
+              <rect x="50" y="88" width="42" height="14" fill="#EF4444"/>
+              <rect x="50" y="102" width="42" height="14" fill="#FFFFFF"/>
+              <!-- Halaman Hijau -->
+              <rect x="20" y="220" width="380" height="18" rx="9" fill="#10B981"/>
+            </svg>
+          `
+        },
+        {
+          // Slide 2: Pembelajaran Digital & Portal Akademik
+          bgClass: 'bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#0284C7]',
+          badge1: 'KURIKULUM MERDEKA',
+          badge2: 'E-LEARNING & RAPOR DIGITAL',
+          kicker: 'PORTAL AKADEMIK TERPADU SISWA & GURU',
+          titleLine1: 'Belajar Lebih Mudah',
+          titleLine2: 'Dengan Portal Digital',
+          schoolHighlight: 'JADWAL, MATERI & CEK NILAI ONLINE',
+          btnText: 'BUKA PORTAL AKADEMIK',
+          btnNav: 'akademik',
+          illustrationSvg: `
+            <svg viewBox="0 0 420 260" class="w-full h-full object-contain drop-shadow-xl">
+              <rect x="65" y="45" width="290" height="170" rx="16" fill="#0F172A" stroke="#38BDF8" stroke-width="4"/>
+              <rect x="82" y="62" width="256" height="128" rx="8" fill="#F8FAFC"/>
+              <!-- Elemen Dashboard E-Learning -->
+              <rect x="96" y="76" width="110" height="14" rx="4" fill="#2563EB"/>
+              <rect x="96" y="98" width="228" height="32" rx="6" fill="#E0F2FE"/>
+              <rect x="96" y="138" width="108" height="40" rx="6" fill="#DCFCE7"/>
+              <rect x="216" y="138" width="108" height="40" rx="6" fill="#FEF3C7"/>
+              <circle cx="305" cy="83" r="10" fill="#10B981"/>
+              <!-- Dudukan Monitor -->
+              <rect x="185" y="215" width="50" height="14" fill="#CBD5E1"/>
+              <rect x="150" y="227" width="120" height="10" rx="5" fill="#94A3B8"/>
+            </svg>
+          `
+        },
+        {
+          // Slide 3: Prestasi & Ekstrakurikuler Siswa SMP
+          bgClass: 'bg-gradient-to-r from-[#0F766E] via-[#0284C7] to-[#1E3A8A]',
+          badge1: 'PRESTASI & KARAKTER',
+          badge2: 'EKSTRAKURIKULER UNGGULAN',
+          kicker: 'MENGEMBANGKAN POTENSI & BAKAT GENERASI MUDA',
+          titleLine1: 'Raih Prestasi Gemilang',
+          titleLine2: 'Bersama Kami di',
+          schoolHighlight: escapeHTML(state.profil.nama_sekolah),
+          btnText: 'LIHAT BERITA & PRESTASI',
+          btnNav: 'berita',
+          illustrationSvg: `
+            <svg viewBox="0 0 420 260" class="w-full h-full object-contain drop-shadow-xl">
+              <!-- Piala Prestasi -->
+              <path d="M150 55 H270 V115 C270 152 242 175 210 175 C178 175 150 152 150 115 Z" fill="#FBBF24"/>
+              <path d="M150 72 H122 C112 72 112 118 145 125" fill="none" stroke="#F59E0B" stroke-width="10" stroke-linecap="round"/>
+              <path d="M270 72 H298 C308 72 308 118 275 125" fill="none" stroke="#F59E0B" stroke-width="10" stroke-linecap="round"/>
+              <rect x="196" y="175" width="28" height="32" fill="#F59E0B"/>
+              <rect x="165" y="205" width="90" height="22" rx="6" fill="#1E293B"/>
+              <polygon points="210,82 217,102 238,102 221,114 227,134 210,122 193,134 199,114 182,102 203,102" fill="#FFFFFF"/>
+            </svg>
+          `
+        }
+      ];
+
+      return `
+        <section id="hero-carousel-wrapper" class="relative w-full overflow-hidden bg-slate-900 select-none">
+          <div id="hero-slider-track" class="hero-slider-track" style="transform: translateX(-${state.currentSlide * 100}%);">
+            ${slides.map((sl) => `
+              <div class="hero-slide-item relative ${sl.bgClass} text-white">
+                <!-- Aksen Geometris Diagonal ala Poster Sekolah Indonesia -->
+                <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: linear-gradient(115deg, rgba(255,255,255,0.25) 0%, transparent 45%, rgba(15,23,42,0.45) 100%);"></div>
+
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-14 relative z-10">
+                  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <!-- Kolom Ilustrasi Kampus / Prestasi (Kiri di Desktop seperti gambar referensi) -->
+                    <div class="lg:col-span-5 order-2 lg:order-1">
+                      <div class="bg-white/15 backdrop-blur-md border-2 border-white/40 rounded-xl p-3 shadow-2xl h-48 sm:h-60 md:h-64 flex items-center justify-center">
+                        ${sl.illustrationSvg}
+                      </div>
+                    </div>
+
+                    <!-- Kolom Teks Poster Utama (Kanan) -->
+                    <div class="lg:col-span-7 order-1 lg:order-2 space-y-3 text-center lg:text-left">
+                      <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2">
+                        <span class="px-3 py-1 rounded bg-white text-blue-900 font-extrabold text-[11px] tracking-wider shadow-sm">
+                          ${sl.badge1}
+                        </span>
+                        <span class="px-3 py-1 rounded bg-emerald-500 text-white font-extrabold text-[11px] tracking-wider shadow-sm">
+                          ${sl.badge2}
+                        </span>
+                      </div>
+
+                      <p class="text-xs sm:text-sm font-bold tracking-widest text-sky-100 uppercase">
+                        ${sl.kicker}
+                      </p>
+
+                      <div class="space-y-1">
+                        <h2 class="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-amber-300 banner-text-shadow italic">
+                          ${sl.titleLine1}
+                        </h2>
+                        <div class="text-xl sm:text-3xl md:text-4xl font-extrabold text-white banner-text-shadow">
+                          ${sl.titleLine2}
+                        </div>
+                        <div class="inline-block mt-1 px-3 py-1 bg-blue-950/75 border border-sky-300/50 rounded text-base sm:text-2xl font-extrabold text-sky-200 tracking-wide uppercase">
+                          ${sl.schoolHighlight}
+                        </div>
+                      </div>
+
+                      <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                        <button data-nav="${sl.btnNav}" class="px-5 py-2.5 rounded bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg transition">
+                          ${sl.btnText} &rsaquo;
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Strip Alamat Sekolah di Bawah Banner (Mirip Gambar Referensi) -->
+                <div class="bg-slate-950/80 text-white/95 text-[11px] sm:text-xs py-2 px-4 border-t border-white/15">
+                  <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+                    <span class="font-medium truncate">
+                      <strong>Alamat:</strong> ${escapeHTML(state.profil.alamat)}
+                    </span>
+                    <span class="text-sky-300 font-semibold hidden sm:inline">
+                      NPSN: ${escapeHTML(state.profil.npsn)} • Tahun Ajaran ${escapeHTML(state.profil.tahun_ajaran)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Tombol Navigasi Kiri & Kanan Slider -->
+          <button id="btn-prev-slide" aria-label="Slide Sebelumnya" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-950/45 hover:bg-slate-950/75 text-white flex items-center justify-center transition">
+            <i data-lucide="chevron-left" class="w-5 h-5"></i>
+          </button>
+          <button id="btn-next-slide" aria-label="Slide Berikutnya" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-950/45 hover:bg-slate-950/75 text-white flex items-center justify-center transition">
+            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+          </button>
+
+          <!-- Indikator Titik Slide -->
+          <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+            ${[0, 1, 2].map((idx) => `
+              <button data-slide-dot="${idx}" aria-label="Slide ${idx + 1}" class="${
+                state.currentSlide === idx
+                  ? 'w-7 h-2.5 rounded-full bg-white shadow transition-all cursor-pointer'
+                  : 'w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all cursor-pointer'
+              }"></button>
+            `).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    // =========================================================================
+    // HALAMAN BERANDA (MIRIP STRUKTUR VERTIKAL GAMBAR REFERENSI)
+    // =========================================================================
+    function renderBeranda() {
+      const featuredBerita = state.berita.slice(0, 2);
+      const galeriItems = state.berita.slice(0, 4);
+
+      return `
+        <div>
+          <!-- 1. HERO BANNER ANIMASI BERGESER OTOMATIS -->
+          ${renderHeroCarousel()}
+
+          <!-- 2. SEKSI BIRU CERAH 3 KOLOM (PROFIL, KEUNGGULAN, PROGRAM & SPMB) -->
+          <section class="bg-gradient-to-r from-[#0284C7] via-[#0095D9] to-[#0284C7] text-white py-12 md:py-14 border-b border-sky-400/30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+                <!-- Kolom 1: Profil Sekolah -->
+                <div class="space-y-4 flex flex-col justify-between">
+                  <div class="space-y-2.5">
+                    <h2 class="text-xl font-bold tracking-tight text-white">${escapeHTML(state.profil.nama_sekolah)}</h2>
+                    <p class="text-xs sm:text-sm text-sky-50/95 leading-relaxed">
+                      ${escapeHTML(state.profil.nama_sekolah)} adalah satuan pendidikan jenjang Sekolah Menengah Pertama yang berkomitmen menyelenggarakan pendidikan berkualitas, berkarakter mulia, dan adaptif terhadap perkembangan teknologi.
+                    </p>
+                  </div>
+                  <div class="pt-1">
+                    <button data-nav="profil" class="inline-flex items-center gap-2 border border-white/85 hover:bg-white hover:text-sky-700 text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded transition">
+                      DETAIL PROFIL <span>&rsaquo;</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Kolom 2: Keunggulan Kami -->
+                <div class="space-y-4 flex flex-col justify-between">
+                  <div class="space-y-2.5">
+                    <h2 class="text-xl font-bold tracking-tight text-white">Keunggulan Kami</h2>
+                    <p class="text-xs sm:text-sm text-sky-50/95 leading-relaxed">
+                      Berstatus <strong>Akreditasi ${escapeHTML(state.profil.akreditasi)}</strong>, didukung tenaga pendidik berkompeten, pembiasaan karakter Profil Pelajar Pancasila, program literasi digital, serta layanan akademik terpadu.
+                    </p>
+                  </div>
+                  <div class="pt-1">
+                    <button data-nav="profil" class="inline-flex items-center gap-2 border border-white/85 hover:bg-white hover:text-sky-700 text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded transition">
+                      DETAIL KEUNGGULAN <span>&rsaquo;</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Kolom 3: Jalur SPMB & Layanan -->
+                <div class="space-y-4 flex flex-col justify-between">
+                  <div class="space-y-2.5">
+                    <h2 class="text-xl font-bold tracking-tight text-white">Jalur Penerimaan SPMB</h2>
+                    <ol class="text-xs sm:text-sm text-sky-50/95 space-y-1 leading-relaxed">
+                      <li>1. Jalur Domisili (Sesuai Wilayah)</li>
+                      <li>2. Jalur Afirmasi (Keluarga Ekonomi Tidak Mampu)</li>
+                      <li>3. Jalur Prestasi (Akademik & Non-Akademik)</li>
+                      <li>4. Jalur Mutasi (Perpindahan Tugas Orang Tua)</li>
+                    </ol>
+                  </div>
+                  <div class="pt-1">
+                    <button data-nav="spmb" class="inline-flex items-center gap-2 border border-white/85 hover:bg-white hover:text-sky-700 text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded transition">
+                      DETAIL PENDAFTARAN <span>&rsaquo;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. SEKSI BERITA TERKINI (LATAR PUTIH BERSIH, 2 KOLOM DENGAN THUMBNAIL & BADGE TANGGAL) -->
+          <section class="bg-white py-12 md:py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+              <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                <h2 class="text-xl sm:text-2xl font-bold text-[#1E3A8A]">Berita Terkini</h2>
+                <button data-nav="berita" class="inline-flex items-center gap-1.5 border border-slate-300 hover:border-blue-600 hover:text-blue-700 text-slate-600 text-xs font-semibold px-3.5 py-2 rounded transition">
+                  Lihat selengkapnya <span>&rsaquo;</span>
+                </button>
+              </div>
+
+              ${featuredBerita.length === 0 ? `
+                <div class="rounded-lg border border-dashed border-slate-300 p-10 text-center">
+                  <p class="text-sm text-slate-500">Belum ada berita atau pengumuman yang diterbitkan.</p>
+                </div>
+              ` : `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  ${featuredBerita.map((item) => `
+                    <article class="flex flex-col sm:flex-row gap-5 items-start group">
+                      <!-- Kotak Poster / Thumbnail Kiri dengan Strip Tanggal Biru -->
+                      <div class="w-full sm:w-44 md:w-48 shrink-0 rounded overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
+                        <div class="relative h-44 sm:h-48 bg-gradient-to-br from-[#1E3A8A] via-[#0284C7] to-[#0EA5E9] flex flex-col items-center justify-center p-4 text-white text-center">
+                          ${item.gambar_url ? `
+                            <img src="${escapeHTML(item.gambar_url)}" alt="${escapeHTML(item.judul)}" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" />
+                          ` : `
+                            <i data-lucide="newspaper" class="w-10 h-10 mb-2 text-amber-300 opacity-90"></i>
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider leading-tight line-clamp-3">${escapeHTML(item.kategori)} SEKOLAH</span>
+                          `}
+                          <!-- Strip Tanggal Biru Cerah di Bawah Thumbnail (Sama seperti referensi) -->
+                          <div class="absolute bottom-0 inset-x-0 bg-[#0095D9]/95 text-white text-[11px] font-semibold px-3 py-1.5 text-left">
+                            ${escapeHTML(formatTanggalIndo(item.tanggal_kegiatan))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Ringkasan Berita Kanan -->
+                      <div class="flex-1 space-y-2.5">
+                        <h3 class="text-base sm:text-lg font-extrabold text-slate-900 uppercase leading-snug group-hover:text-blue-700 transition cursor-pointer" data-open-berita="${escapeHTML(item.id)}">
+                          ${escapeHTML(item.judul)}
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-4">
+                          ${escapeHTML(item.ringkasan || item.isi_konten)}
+                        </p>
+                        <div class="pt-1 flex items-center justify-between text-[11px] text-slate-400 font-semibold uppercase">
+                          <span>${escapeHTML(item.kategori)} • ${escapeHTML(item.penulis || 'ADMIN')}</span>
+                          <button data-open-berita="${escapeHTML(item.id)}" class="text-blue-600 hover:underline font-bold">
+                            Baca Selengkapnya &rsaquo;
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+          </section>
+
+          <!-- 4. STRIP AJAKAN PENDAFTARAN SPMB BIRU GRADASI (MIRIP GAMBAR REFERENSI) -->
+          <section class="bg-gradient-to-r from-[#0077CC] via-[#0095D9] to-[#0EA5E9] text-white py-9">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+              <div>
+                <h2 class="text-lg sm:text-xl md:text-2xl font-extrabold uppercase tracking-wide">
+                  DAFTARKAN DIRIMU MENJADI SISWA ${escapeHTML(state.profil.nama_sekolah)}
+                </h2>
+                <p class="text-xs sm:text-sm text-sky-100 mt-1">
+                  Penerimaan Murid Baru Tahun Ajaran ${escapeHTML(state.profil.tahun_ajaran)} • ${state.profil.status_spmb ? 'Pendaftaran Online Sedang Dibuka' : 'Cek Hasil Seleksi Online'}
+                </p>
+              </div>
+              <button data-nav="spmb" class="shrink-0 inline-flex items-center gap-2.5 bg-[#1E295A] hover:bg-[#131B3E] text-white font-bold text-sm px-6 py-3.5 rounded shadow-md transition">
+                <i data-lucide="file-edit" class="w-4 h-4"></i>
+                <span>Pendaftaran SPMB &rsaquo;</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 5. SEKSI GALERI KEGIATAN GELAP DENGAN POLA TITIK PETA (MIRIP GAMBAR REFERENSI) -->
+          <section class="dark-dotted-map text-white py-12 md:py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-7">
+              <div class="flex items-center justify-between">
+                <h2 class="text-lg sm:text-xl font-bold uppercase tracking-wider text-white">GALERI KEGIATAN</h2>
+                <button data-nav="berita" class="inline-flex items-center gap-1.5 border border-white/30 hover:border-white text-white/90 hover:text-white text-xs font-semibold px-3.5 py-2 rounded transition">
+                  Lihat Selengkapnya <span>&rsaquo;</span>
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                ${(galeriItems.length > 0 ? galeriItems : [
+                  { id: 'g1', judul: 'Kegiatan Pembelajaran & Praktikum IPA SMP', kategori: 'Agenda', tanggal_kegiatan: '2026-04-25' },
+                  { id: 'g2', judul: 'Pelaksanaan Asesmen Berbasis Komputer (ANBK)', kategori: 'Akademik', tanggal_kegiatan: '2026-04-20' }
+                ]).map((g, idx) => {
+                  const dt = formatBulanTanggal(g.tanggal_kegiatan);
+                  const gradients = [
+                    'from-blue-900 to-sky-700',
+                    'from-teal-900 to-emerald-700',
+                    'from-indigo-900 to-blue-700',
+                    'from-slate-800 to-cyan-800'
+                  ];
+                  return `
+                    <div data-open-berita="${escapeHTML(g.id)}" class="group relative h-56 rounded overflow-hidden border border-white/15 bg-slate-800 cursor-pointer shadow-lg">
+                      ${g.gambar_url ? `
+                        <img src="${escapeHTML(g.gambar_url)}" alt="${escapeHTML(g.judul)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.style.display='none'" />
+                      ` : `
+                        <div class="w-full h-full bg-gradient-to-br ${gradients[idx % gradients.length]} flex items-center justify-center">
+                          <i data-lucide="camera" class="w-12 h-12 text-white/30 group-hover:scale-110 transition"></i>
+                        </div>
+                      `}
+                      <!-- Lencana Tanggal Pojok Kanan Atas (APR 25) -->
+                      <div class="absolute top-3 right-3 bg-slate-950/75 backdrop-blur-sm border border-white/20 px-2.5 py-1 text-center rounded">
+                        <div class="text-[10px] font-bold text-sky-300 leading-none">${dt.bln}</div>
+                        <div class="text-sm font-extrabold text-white leading-tight mt-0.5">${dt.tgl}</div>
+                      </div>
+                      <!-- Overlay Judul Bawah -->
+                      <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 flex items-end justify-between gap-2">
+                        <h3 class="text-xs sm:text-sm font-bold text-white leading-snug line-clamp-2 group-hover:text-amber-300 transition">
+                          ${escapeHTML(g.judul)}
+                        </h3>
+                        <span class="text-white/80 font-bold shrink-0">&rsaquo;</span>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          </section>
+
+          <!-- 6. BANNER VISI SEKOLAH (BAGIAN PALING BAWAH SEPERTI REFERENSI) -->
+          <section class="bg-[#0F172A] text-white py-10 px-4 border-t border-slate-800">
+            <div class="max-w-5xl mx-auto text-center space-y-2">
+              <div class="text-xs font-bold uppercase tracking-widest text-sky-400">VISI SATUAN PENDIDIKAN</div>
+              <p class="text-base sm:text-xl md:text-2xl font-extrabold leading-relaxed text-amber-300">
+                "Kami Mempunyai Visi ${escapeHTML(state.profil.visi)}"
+              </p>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // HALAMAN PROFIL & DIREKTORI GURU
+    // =========================================================================
+    function renderProfil() {
+      const daftarGuru = state.pengguna.filter(
+        (u) =>
+          u.peran === 'guru' &&
+          (u.nama_lengkap.toLowerCase().includes(state.guruSearch.toLowerCase()) ||
+            (u.kelas_atau_mapel || '').toLowerCase().includes(state.guruSearch.toLowerCase()))
+      );
+
+      const ekskulList = [
+        { nama: 'Pramuka & Kepemimpinan', jadwal: 'Jumat, 14:00 WIB', ikon: 'compass' },
+        { nama: 'KIR & Olimpiade Sains (OSN)', jadwal: 'Rabu, 15:00 WIB', ikon: 'flask-conical' },
+        { nama: 'Palang Merah Remaja (PMR) & Adiwiyata', jadwal: 'Kamis, 15:00 WIB', ikon: 'heart-pulse' },
+        { nama: 'Olahraga Prestasi & Seni Budaya', jadwal: 'Sabtu, 08:00 WIB', ikon: 'trophy' }
+      ];
+
+      return `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+          <div class="border-b border-slate-200 pb-4">
+            <h1 class="text-2xl font-extrabold text-[#1E3A8A]">Profil Sekolah & Tenaga Pendidik</h1>
+            <p class="text-sm text-slate-500 mt-1">Identitas resmi, visi misi, ekstrakurikuler, dan direktori guru pengajar.</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+              <h2 class="text-lg font-bold text-[#1E3A8A] flex items-center gap-2">
+                <i data-lucide="school" class="w-5 h-5 text-sky-600"></i> Identitas Satuan Pendidikan
+              </h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                  <div class="text-xs text-slate-500">Nama Sekolah</div>
+                  <div class="font-bold text-slate-900 mt-0.5">${escapeHTML(state.profil.nama_sekolah)}</div>
+                </div>
+                <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                  <div class="text-xs text-slate-500">NPSN & Akreditasi</div>
+                  <div class="font-bold text-slate-900 mt-0.5">${escapeHTML(state.profil.npsn)} • ${escapeHTML(state.profil.akreditasi)}</div>
+                </div>
+                <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 sm:col-span-2">
+                  <div class="text-xs text-slate-500">Alamat Lengkap</div>
+                  <div class="font-bold text-slate-900 mt-0.5">${escapeHTML(state.profil.alamat)}</div>
+                </div>
+              </div>
+              <div class="p-4 rounded-lg bg-sky-50 border border-sky-200 space-y-1">
+                <div class="text-xs font-bold text-sky-900 uppercase">Sambutan Kepala Sekolah (${escapeHTML(state.profil.kepala_sekolah)})</div>
+                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${escapeHTML(state.profil.sambutan_kepsek)}</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+              <h2 class="text-lg font-bold text-[#1E3A8A] flex items-center gap-2">
+                <i data-lucide="target" class="w-5 h-5 text-sky-600"></i> Visi & Misi Sekolah
+              </h2>
+              <div class="space-y-3">
+                <div class="p-4 rounded-lg bg-slate-50 border border-slate-200">
+                  <span class="inline-block px-2.5 py-0.5 rounded bg-[#1E3A8A] text-white text-xs font-bold mb-1.5">VISI</span>
+                  <p class="text-sm font-semibold text-slate-800 leading-relaxed">${escapeHTML(state.profil.visi)}</p>
+                </div>
+                <div class="p-4 rounded-lg bg-slate-50 border border-slate-200">
+                  <span class="inline-block px-2.5 py-0.5 rounded bg-[#0284C7] text-white text-xs font-bold mb-1.5">MISI</span>
+                  <p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${escapeHTML(state.profil.misi)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+            <h2 class="text-lg font-bold text-[#1E3A8A]">Program Ekstrakurikuler & Pengembangan Diri</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              ${ekskulList.map((ex) => `
+                <div class="rounded-lg bg-slate-50 border border-slate-200 p-4 flex items-start gap-3">
+                  <div class="p-2.5 rounded-lg bg-sky-100 text-sky-700 shrink-0">
+                    <i data-lucide="${ex.ikon}" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-900">${ex.nama}</h3>
+                    <p class="text-xs text-slate-500 mt-1">${ex.jadwal}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="text-lg font-bold text-[#1E3A8A]">Direktori Guru & Mata Pelajaran</h2>
+                <p class="text-xs text-slate-500">Daftar pendidik aktif di ${escapeHTML(state.profil.nama_sekolah)}</p>
+              </div>
+              <div class="relative w-full sm:w-64">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input id="input-search-guru" type="text" value="${escapeHTML(state.guruSearch)}" placeholder="Cari nama guru atau mapel..." class="w-full pl-9 pr-3 py-2 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+              </div>
+            </div>
+
+            ${daftarGuru.length === 0 ? `
+              <div class="rounded-lg border border-dashed border-slate-300 p-8 text-center">
+                <p class="text-sm text-slate-500">Belum ada data guru yang ditemukan.</p>
+              </div>
+            ` : `
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                ${daftarGuru.map((g) => `
+                  <div class="rounded-lg bg-slate-50 border border-slate-200 p-4 flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-lg bg-[#1E3A8A] text-white font-bold flex items-center justify-center shrink-0">
+                      ${escapeHTML(g.nama_lengkap.charAt(0).toUpperCase())}
+                    </div>
+                    <div class="min-w-0">
+                      <h3 class="text-sm font-bold text-slate-900 truncate">${escapeHTML(g.nama_lengkap)}</h3>
+                      <p class="text-xs font-semibold text-sky-700 mt-0.5">Guru ${escapeHTML(g.kelas_atau_mapel || 'Umum')}</p>
+                      <p class="text-[11px] text-slate-400 mt-0.5">NIP/Kode: ${escapeHTML(g.username)}</p>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // HALAMAN BERITA, AGENDA & GALERI
+    // =========================================================================
+    function renderBerita() {
+      const kategoriList = ['Semua', 'Berita', 'Pengumuman', 'Prestasi', 'Agenda'];
+      const filtered = state.berita.filter((b) => {
+        const matchKat = state.beritaFilter === 'Semua' || b.kategori === state.beritaFilter;
+        const matchQuery =
+          b.judul.toLowerCase().includes(state.beritaSearch.toLowerCase()) ||
+          (b.ringkasan || '').toLowerCase().includes(state.beritaSearch.toLowerCase());
+        return matchKat && matchQuery;
+      });
+
+      return `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <h1 class="text-2xl font-extrabold text-[#1E3A8A]">Info Terbaru: Berita, Agenda & Prestasi</h1>
+              <p class="text-sm text-slate-500 mt-1">Arsip informasi resmi, pengumuman sekolah, dan galeri kegiatan siswa.</p>
+            </div>
+            <div class="relative w-full md:w-72">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input id="input-search-berita" type="text" value="${escapeHTML(state.beritaSearch)}" placeholder="Cari judul berita..." class="w-full pl-10 pr-4 py-2 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            ${kategoriList.map((kat) => `
+              <button data-filter-berita="${kat}" class="px-4 py-2 rounded text-xs font-bold transition ${
+                state.beritaFilter === kat
+                  ? 'bg-[#1E3A8A] text-white'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }">
+                ${kat}
+              </button>
+            `).join('')}
+          </div>
+
+          ${filtered.length === 0 ? `
+            <div class="rounded-lg border border-dashed border-slate-300 p-12 text-center space-y-2">
+              <p class="text-sm font-semibold text-slate-600">Belum ada publikasi pada kategori ini</p>
+            </div>
+          ` : `
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${filtered.map((item) => `
+                <article class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition">
+                  <div>
+                    <div class="relative h-44 bg-gradient-to-br from-[#1E3A8A] to-[#0284C7] flex items-center justify-center text-white">
+                      ${item.gambar_url ? `
+                        <img src="${escapeHTML(item.gambar_url)}" alt="${escapeHTML(item.judul)}" class="w-full h-full object-cover" onerror="this.style.display='none'" />
+                      ` : `
+                        <i data-lucide="newspaper" class="w-10 h-10 text-white/40"></i>
+                      `}
+                      <div class="absolute bottom-0 inset-x-0 bg-[#0095D9]/95 text-white text-[11px] font-semibold px-3 py-1">
+                        ${escapeHTML(formatTanggalIndo(item.tanggal_kegiatan))}
+                      </div>
+                    </div>
+                    <div class="p-5 space-y-2">
+                      ${renderKategoriBadge(item.kategori)}
+                      <h2 class="text-base font-extrabold text-slate-900 leading-snug">${escapeHTML(item.judul)}</h2>
+                      <p class="text-xs text-slate-600 leading-relaxed line-clamp-3">${escapeHTML(item.ringkasan)}</p>
+                    </div>
+                  </div>
+                  <div class="px-5 pb-4 pt-2 flex items-center justify-between border-t border-slate-100">
+                    <span class="text-[11px] text-slate-400">Oleh: ${escapeHTML(item.penulis || 'Admin')}</span>
+                    <button data-open-berita="${escapeHTML(item.id)}" class="text-xs font-bold text-blue-700 hover:underline">
+                      Baca Detail &rsaquo;
+                    </button>
+                  </div>
+                </article>
+              `).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // HALAMAN SPMB ONLINE (SISTEM PENERIMAAN MURID BARU)
+    // =========================================================================
+    function renderSpmb() {
+      return `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <h1 class="text-2xl font-extrabold text-[#1E3A8A]">SPMB Online (Sistem Penerimaan Murid Baru)</h1>
+              <p class="text-sm text-slate-500 mt-1">Pendaftaran calon murid baru Tahun Ajaran ${escapeHTML(state.profil.tahun_ajaran)} & pengecekan hasil seleksi.</p>
+            </div>
+            <div class="inline-flex rounded-lg bg-slate-100 p-1 border border-slate-200 self-start">
+              <button data-spmb-tab="daftar" class="px-4 py-2 rounded text-xs font-bold transition ${
+                state.spmbTab === 'daftar' ? 'bg-[#1E3A8A] text-white' : 'text-slate-600 hover:text-slate-900'
+              }">
+                Formulir Pendaftaran
+              </button>
+              <button data-spmb-tab="cek" class="px-4 py-2 rounded text-xs font-bold transition ${
+                state.spmbTab === 'cek' ? 'bg-[#1E3A8A] text-white' : 'text-slate-600 hover:text-slate-900'
+              }">
+                Cek Status Seleksi
+              </button>
+            </div>
+          </div>
+
+          ${state.spmbTab === 'daftar' ? `
+            ${!state.profil.status_spmb ? `
+              <div class="bg-white rounded-xl border border-slate-200 p-8 text-center space-y-3 border-l-4 border-l-rose-600 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900">Pendaftaran SPMB Sedang Ditutup</h2>
+                <p class="text-sm text-slate-600 max-w-md mx-auto">
+                  Mohon maaf, formulir pendaftaran murid baru saat ini belum dibuka atau sudah ditutup oleh panitia sekolah. Anda tetap dapat mengecek status seleksi pada tab <strong>Cek Status Seleksi</strong>.
+                </p>
+              </div>
+            ` : `
+              ${state.lastSpmbReceipt ? `
+                <div class="rounded-xl p-6 border-2 border-emerald-500 bg-emerald-50 space-y-4">
+                  <div class="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 class="text-base font-extrabold text-emerald-900">Bukti Pendaftaran SPMB Berhasil Dibuat!</h3>
+                      <p class="text-xs text-emerald-800">Simpan Nomor Pendaftaran di bawah ini untuk mengecek hasil seleksi.</p>
+                    </div>
+                    <button data-close-receipt class="text-xs text-slate-600 hover:text-slate-900 underline">Tutup</button>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white rounded-lg p-4 border border-emerald-200">
+                    <div>
+                      <div class="text-[11px] text-slate-500">Nomor Pendaftaran</div>
+                      <div class="text-base font-extrabold text-[#1E3A8A]">${escapeHTML(state.lastSpmbReceipt.no_pendaftaran)}</div>
+                    </div>
+                    <div>
+                      <div class="text-[11px] text-slate-500">Nama Calon Murid</div>
+                      <div class="text-sm font-bold text-slate-900">${escapeHTML(state.lastSpmbReceipt.nama_lengkap)}</div>
+                    </div>
+                    <div>
+                      <div class="text-[11px] text-slate-500">Jalur & Status</div>
+                      <div class="text-sm font-semibold text-slate-800">${escapeHTML(state.lastSpmbReceipt.jalur_pendaftaran)} • ${escapeHTML(state.lastSpmbReceipt.status_seleksi)}</div>
+                    </div>
+                  </div>
+                </div>
+              ` : ''}
+
+              <div class="bg-white rounded-xl border border-slate-200 p-6 md:p-8 shadow-sm">
+                <h2 class="text-lg font-bold text-[#1E3A8A] mb-1">Formulir Calon Murid Baru Jenjang SMP</h2>
+                <p class="text-xs text-slate-500 mb-6">Lengkapi data diri calon murid sesuai dengan Ijazah/Rapor SD/MI dan Kartu Keluarga.</p>
+
+                <form id="form-spmb" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">NISN (10 Digit) *</label>
+                    <input name="nisn" required placeholder="Contoh: 0134567890" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Lengkap Calon Murid *</label>
+                    <input name="nama_lengkap" required placeholder="Nama sesuai akta kelahiran" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Jenis Kelamin *</label>
+                    <select name="jenis_kelamin" required class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+                      <option value="Laki-laki">Laki-laki</option>
+                      <option value="Perempuan">Perempuan</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Asal Sekolah (SD / MI) *</label>
+                    <input name="asal_sd" required placeholder="Contoh: SDN 01 Harapan" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Jalur Pendaftaran SPMB *</label>
+                    <select name="jalur_pendaftaran" required class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+                      <option value="Domisili">Jalur Domisili</option>
+                      <option value="Afirmasi">Jalur Afirmasi</option>
+                      <option value="Prestasi">Jalur Prestasi</option>
+                      <option value="Mutasi">Jalur Mutasi</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Nilai Rata-Rata Rapor / Ijazah SD *</label>
+                    <input name="nilai_rata_sd" type="number" step="0.01" min="0" max="100" required placeholder="Contoh: 87.50" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Nomor WhatsApp Orang Tua / Wali *</label>
+                    <input name="no_hp_ortu" required placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Alamat Domisili Lengkap *</label>
+                    <input name="alamat" required placeholder="Jalan, RT/RW, Kelurahan/Desa" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                  </div>
+                  <div class="md:col-span-2 pt-2 flex justify-end">
+                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#1E3A8A] hover:bg-blue-900 text-white font-bold text-sm transition">
+                      Kirim Pendaftaran SPMB &rsaquo;
+                    </button>
+                  </div>
+                </form>
+              </div>
+            `}
+          ` : `
+            <div class="bg-white rounded-xl border border-slate-200 p-6 md:p-8 max-w-2xl mx-auto space-y-5 shadow-sm">
+              <div class="text-center space-y-1.5">
+                <h2 class="text-lg font-bold text-[#1E3A8A]">Cek Hasil Seleksi SPMB</h2>
+                <p class="text-xs text-slate-500">Masukkan Nomor Pendaftaran SPMB (contoh: SPMB-2026-001) atau NISN calon murid.</p>
+              </div>
+
+              <form id="form-cek-spmb" class="flex flex-col sm:flex-row gap-2.5">
+                <input name="query" value="${escapeHTML(state.spmbCekQuery)}" required placeholder="Ketik Nomor Pendaftaran atau NISN..." class="flex-1 px-4 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                <button type="submit" class="px-5 py-2.5 rounded-lg bg-[#0284C7] hover:bg-sky-700 text-white font-bold text-sm transition shrink-0">
+                  Periksa Status
+                </button>
+              </form>
+
+              ${state.spmbCekResult === null ? `
+                <div class="rounded-lg bg-rose-50 border border-rose-200 p-4 text-center text-xs text-rose-700 font-semibold">
+                  Data pendaftaran dengan Nomor Pendaftaran / NISN tersebut tidak ditemukan. Pastikan penulisan sudah benar.
+                </div>
+              ` : state.spmbCekResult ? `
+                <div class="rounded-xl bg-slate-50 border border-slate-200 p-5 space-y-3">
+                  <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+                    <div>
+                      <div class="text-xs text-slate-500">No. Pendaftaran: ${escapeHTML(state.spmbCekResult.no_pendaftaran)}</div>
+                      <h3 class="text-base font-extrabold text-slate-900">${escapeHTML(state.spmbCekResult.nama_lengkap)}</h3>
+                    </div>
+                    ${renderBadgeStatusSpmb(state.spmbCekResult.status_seleksi)}
+                  </div>
+                  <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <span class="text-slate-400 block">NISN</span>
+                      <span class="font-bold text-slate-800">${escapeHTML(state.spmbCekResult.nisn)}</span>
+                    </div>
+                    <div>
+                      <span class="text-slate-400 block">Jalur SPMB</span>
+                      <span class="font-bold text-slate-800">${escapeHTML(state.spmbCekResult.jalur_pendaftaran)}</span>
+                    </div>
+                    <div>
+                      <span class="text-slate-400 block">Asal SD/MI</span>
+                      <span class="font-bold text-slate-800">${escapeHTML(state.spmbCekResult.asal_sd)}</span>
+                    </div>
+                    <div>
+                      <span class="text-slate-400 block">Nilai Rata-rata</span>
+                      <span class="font-bold text-slate-800">${escapeHTML(state.spmbCekResult.nilai_rata_sd)}</span>
+                    </div>
+                  </div>
+                  <div class="rounded-lg bg-white border border-slate-200 p-3 text-xs text-slate-700">
+                    <strong>Catatan Panitia:</strong> ${escapeHTML(state.spmbCekResult.catatan_admin || '-')}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // HALAMAN PORTAL AKADEMIK (JADWAL, E-LEARNING, CEK NILAI)
+    // =========================================================================
+    function renderAkademik() {
+      const user = state.currentUser;
+      const isGuruOrAdmin = user && (user.role === 'guru' || user.role === 'admin');
+      const isSiswa = user && user.role === 'siswa';
+
+      const jadwalFiltered = state.jadwal_materi.filter(
+        (item) => item.tipe === 'Jadwal' && item.kelas === state.kelasFilter
+      );
+      const materiFiltered = state.jadwal_materi.filter(
+        (item) => item.tipe === 'Materi' && item.kelas === state.kelasFilter
+      );
+
+      const siswaList = state.pengguna.filter((u) => u.peran === 'siswa');
+      const nilaiFiltered = isSiswa
+        ? state.nilai.filter((n) => n.siswa_id === user.id)
+        : state.nilai;
+
+      return `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <h1 class="text-2xl font-extrabold text-[#1E3A8A]">Portal Akademik & E-Learning</h1>
+              <p class="text-sm text-slate-500 mt-1">Jadwal pelajaran, modul materi digital, dan rekap nilai akademik siswa SMP.</p>
+            </div>
+            <div class="inline-flex rounded-lg bg-slate-100 p-1 border border-slate-200 self-start">
+              <button data-akademik-tab="jadwal" class="px-3.5 py-2 rounded text-xs font-bold transition ${
+                state.akademikTab === 'jadwal' ? 'bg-[#1E3A8A] text-white' : 'text-slate-600 hover:text-slate-900'
+              }">
+                Jadwal Pelajaran
+              </button>
+              <button data-akademik-tab="materi" class="px-3.5 py-2 rounded text-xs font-bold transition ${
+                state.akademikTab === 'materi' ? 'bg-[#1E3A8A] text-white' : 'text-slate-600 hover:text-slate-900'
+              }">
+                E-Learning & Tugas
+              </button>
+              <button data-akademik-tab="nilai" class="px-3.5 py-2 rounded text-xs font-bold transition ${
+                state.akademikTab === 'nilai' ? 'bg-[#1E3A8A] text-white' : 'text-slate-600 hover:text-slate-900'
+              }">
+                Cek Nilai Digital
+              </button>
+            </div>
+          </div>
+
+          ${!user ? `
+            <div class="rounded-xl p-4 bg-sky-50 border border-sky-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <p class="text-xs sm:text-sm text-slate-700">
+                Masuk menggunakan akun <strong>Siswa (NISN)</strong> untuk melihat nilai rapor Anda, atau akun <strong>Guru (NIP)</strong> untuk mengelola materi dan menginput nilai.
+              </p>
+              <button data-open-login class="px-4 py-2 rounded-lg bg-[#1E3A8A] hover:bg-blue-900 text-white text-xs font-bold shrink-0">
+                Login Portal Akademik
+              </button>
+            </div>
+          ` : `
+            <div class="rounded-xl p-4 bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3">
+              <div class="text-xs sm:text-sm text-emerald-950">
+                Masuk sebagai <strong>${escapeHTML(user.nama_lengkap)}</strong>
+                <span class="ml-2 px-2 py-0.5 rounded bg-emerald-600 text-white text-xs font-bold uppercase">${escapeHTML(user.role)}</span>
+                ${user.kelas_atau_mapel ? `<span class="text-emerald-800 ml-1">(${escapeHTML(user.kelas_atau_mapel)})</span>` : ''}
+              </div>
+            </div>
+          `}
+
+          ${state.akademikTab !== 'nilai' ? `
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-600 mr-1">Pilih Jenjang Kelas:</span>
+              ${['VII', 'VIII', 'IX'].map((kls) => `
+                <button data-kelas-filter="${kls}" class="px-4 py-1.5 rounded text-xs font-bold transition ${
+                  state.kelasFilter === kls
+                    ? 'bg-[#0284C7] text-white'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }">
+                  Kelas ${kls}
+                </button>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          ${state.akademikTab === 'jadwal' ? `
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+              <h2 class="text-lg font-bold text-[#1E3A8A]">Jadwal Pelajaran — Kelas ${state.kelasFilter}</h2>
+              ${jadwalFiltered.length === 0 ? `
+                <div class="rounded-lg border border-dashed border-slate-300 p-8 text-center">
+                  <p class="text-sm text-slate-500">Belum ada jadwal pelajaran untuk Kelas ${state.kelasFilter}.</p>
+                </div>
+              ` : `
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                      <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
+                        <th class="py-3 px-3">Hari</th>
+                        <th class="py-3 px-3">Jam</th>
+                        <th class="py-3 px-3">Mata Pelajaran</th>
+                        <th class="py-3 px-3">Guru Pengampu</th>
+                        <th class="py-3 px-3">Keterangan / Ruang</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                      ${jadwalFiltered.map((j) => `
+                        <tr class="hover:bg-slate-50">
+                          <td class="py-3 px-3 font-bold text-slate-900">${escapeHTML(j.hari)}</td>
+                          <td class="py-3 px-3 text-slate-600">${escapeHTML(j.jam_pelajaran)}</td>
+                          <td class="py-3 px-3 font-bold text-blue-800">${escapeHTML(j.mata_pelajaran)}</td>
+                          <td class="py-3 px-3 text-slate-700">${escapeHTML(j.nama_guru)}</td>
+                          <td class="py-3 px-3 text-xs text-slate-500">${escapeHTML(j.deskripsi_atau_link || '-')}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `}
+            </div>
+          ` : ''}
+
+          ${state.akademikTab === 'materi' ? `
+            <div class="space-y-5">
+              ${isGuruOrAdmin ? `
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                  <h3 class="text-base font-bold text-[#1E3A8A]">Bagikan Materi / Tugas Baru (Kelas ${state.kelasFilter})</h3>
+                  <form id="form-tambah-materi" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <input type="hidden" name="kelas" value="${state.kelasFilter}" />
+                    <div>
+                      <label class="block text-xs font-bold text-slate-700 mb-1">Mata Pelajaran *</label>
+                      <input name="mata_pelajaran" required value="${user.role === 'guru' ? escapeHTML(user.kelas_atau_mapel) : ''}" placeholder="Contoh: IPA Terpadu" class="w-full px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-700 mb-1">Judul Materi / Tugas *</label>
+                      <input name="judul_materi" required placeholder="Contoh: Rangkuman Sistem Tata Surya" class="w-full px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                    </div>
+                    <div class="md:col-span-2">
+                      <label class="block text-xs font-bold text-slate-700 mb-1">Instruksi Tugas atau Tautan Modul *</label>
+                      <textarea name="deskripsi_atau_link" rows="2" required placeholder="Tuliskan ringkasan materi atau tempel tautan dokumen pembelajaran..." class="w-full px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm"></textarea>
+                    </div>
+                    <div class="md:col-span-2 flex justify-end">
+                      <button type="submit" class="px-5 py-2.5 rounded-lg bg-[#0284C7] hover:bg-sky-700 text-white text-xs font-bold">
+                        Publikasikan Materi
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              ` : ''}
+
+              <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                <h2 class="text-lg font-bold text-[#1E3A8A]">Daftar Materi & Tugas — Kelas ${state.kelasFilter}</h2>
+                ${materiFiltered.length === 0 ? `
+                  <div class="rounded-lg border border-dashed border-slate-300 p-8 text-center">
+                    <p class="text-sm text-slate-500">Belum ada materi E-Learning untuk Kelas ${state.kelasFilter}.</p>
+                  </div>
+                ` : `
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${materiFiltered.map((m) => `
+                      <div class="rounded-lg bg-slate-50 border border-slate-200 p-4 space-y-2 flex flex-col justify-between">
+                        <div class="space-y-1.5">
+                          <div class="flex items-center justify-between gap-2">
+                            <span class="px-2.5 py-0.5 rounded bg-blue-100 text-blue-800 text-xs font-bold">${escapeHTML(m.mata_pelajaran)}</span>
+                            <span class="text-[11px] text-slate-400">Oleh: ${escapeHTML(m.nama_guru)}</span>
+                          </div>
+                          <h3 class="text-sm font-bold text-slate-900">${escapeHTML(m.judul_materi)}</h3>
+                          <p class="text-xs text-slate-600 leading-relaxed break-words">${escapeHTML(m.deskripsi_atau_link)}</p>
+                        </div>
+                        ${isGuruOrAdmin ? `
+                          <div class="pt-2 border-t border-slate-200 flex justify-end">
+                            <button data-delete-jm="${escapeHTML(m.id)}" class="text-xs text-rose-600 hover:underline font-semibold">Hapus Materi</button>
+                          </div>
+                        ` : ''}
+                      </div>
+                    `).join('')}
+                  </div>
+                `}
+              </div>
+            </div>
+          ` : ''}
+
+          ${state.akademikTab === 'nilai' ? `
+            ${!user ? `
+              <div class="bg-white rounded-xl border border-slate-200 p-10 text-center space-y-3 shadow-sm">
+                <h3 class="text-base font-bold text-slate-900">Akses Terbatas Warga Sekolah</h3>
+                <p class="text-xs text-slate-500 max-w-md mx-auto">Silakan masuk menggunakan akun Siswa (NISN) atau Guru (NIP) untuk mengakses layanan nilai akademik digital.</p>
+                <button data-open-login class="px-5 py-2.5 rounded-lg bg-[#1E3A8A] text-white text-xs font-bold">Masuk Sekarang</button>
+              </div>
+            ` : `
+              <div class="space-y-5">
+                ${isGuruOrAdmin ? `
+                  <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-[#1E3A8A]">Input Nilai Akademik Siswa</h3>
+                    ${siswaList.length === 0 ? `
+                      <p class="text-xs text-amber-800 bg-amber-50 border border-amber-200 p-3 rounded-lg">Belum ada akun siswa yang terdaftar. Admin perlu menambahkan akun siswa terlebih dahulu di Panel Admin.</p>
+                    ` : `
+                      <form id="form-input-nilai" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div>
+                          <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Siswa *</label>
+                          <select name="siswa_id" required class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm">
+                            ${siswaList.map((s) => `<option value="${escapeHTML(s.id)}">${escapeHTML(s.nama_lengkap)} (${escapeHTML(s.kelas_atau_mapel || '-')})</option>`).join('')}
+                          </select>
+                        </div>
+                        <div>
+                          <label class="block text-xs font-bold text-slate-700 mb-1">Mata Pelajaran *</label>
+                          <input name="mata_pelajaran" required value="${user.role === 'guru' ? escapeHTML(user.kelas_atau_mapel) : ''}" placeholder="Contoh: Bahasa Indonesia" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                        </div>
+                        <div>
+                          <label class="block text-xs font-bold text-slate-700 mb-1">Semester *</label>
+                          <select name="semester" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm">
+                            <option value="Ganjil">Ganjil</option>
+                            <option value="Genap">Genap</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label class="block text-xs font-bold text-slate-700 mb-1">Nilai Tugas (0-100) *</label>
+                          <input name="nilai_tugas" type="number" min="0" max="100" required placeholder="85" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                        </div>
+                        <div>
+                          <label class="block text-xs font-bold text-slate-700 mb-1">Nilai UTS (0-100) *</label>
+                          <input name="nilai_uts" type="number" min="0" max="100" required placeholder="82" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                        </div>
+                        <div>
+                          <label class="block text-xs font-bold text-slate-700 mb-1">Nilai UAS (0-100) *</label>
+                          <input name="nilai_uas" type="number" min="0" max="100" required placeholder="88" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                        </div>
+                        <div class="sm:col-span-2 lg:col-span-3">
+                          <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Guru</label>
+                          <input name="catatan_guru" placeholder="Catatan perkembangan belajar siswa..." class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                        </div>
+                        <div class="sm:col-span-2 lg:col-span-3 flex justify-end">
+                          <button type="submit" class="px-5 py-2.5 rounded-lg bg-[#1E3A8A] hover:bg-blue-900 text-white text-xs font-bold">Simpan Nilai Siswa</button>
+                        </div>
+                      </form>
+                    `}
+                  </div>
+                ` : ''}
+
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                  <h2 class="text-lg font-bold text-[#1E3A8A]">
+                    ${isSiswa ? `Rekap Nilai Akademik — ${escapeHTML(user.nama_lengkap)}` : 'Daftar Nilai Akademik Tercatat'}
+                  </h2>
+
+                  ${nilaiFiltered.length === 0 ? `
+                    <div class="rounded-lg border border-dashed border-slate-300 p-8 text-center">
+                      <p class="text-sm text-slate-500">Belum ada data nilai akademik yang tercatat.</p>
+                    </div>
+                  ` : `
+                    <div class="overflow-x-auto">
+                      <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                          <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
+                            ${!isSiswa ? '<th class="py-3 px-3">Nama Siswa</th>' : ''}
+                            <th class="py-3 px-3">Mata Pelajaran</th>
+                            <th class="py-3 px-3">Semester</th>
+                            <th class="py-3 px-3">Tugas</th>
+                            <th class="py-3 px-3">UTS</th>
+                            <th class="py-3 px-3">UAS</th>
+                            <th class="py-3 px-3">Rata-rata</th>
+                            <th class="py-3 px-3">Predikat</th>
+                            <th class="py-3 px-3">Catatan</th>
+                            ${isGuruOrAdmin ? '<th class="py-3 px-3">Aksi</th>' : ''}
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                          ${nilaiFiltered.map((n) => {
+                            const siswaObj = state.pengguna.find((u) => u.id === n.siswa_id);
+                            const rata = ((Number(n.nilai_tugas) + Number(n.nilai_uts) + Number(n.nilai_uas)) / 3).toFixed(1);
+                            return `
+                              <tr class="hover:bg-slate-50">
+                                ${!isSiswa ? `<td class="py-3 px-3 font-bold text-slate-900">${escapeHTML(siswaObj ? siswaObj.nama_lengkap : 'Siswa')}</td>` : ''}
+                                <td class="py-3 px-3 font-bold text-blue-800">${escapeHTML(n.mata_pelajaran)}</td>
+                                <td class="py-3 px-3 text-slate-600">${escapeHTML(n.semester)}</td>
+                                <td class="py-3 px-3">${escapeHTML(n.nilai_tugas)}</td>
+                                <td class="py-3 px-3">${escapeHTML(n.nilai_uts)}</td>
+                                <td class="py-3 px-3">${escapeHTML(n.nilai_uas)}</td>
+                                <td class="py-3 px-3 font-bold text-slate-900">${rata}</td>
+                                <td class="py-3 px-3">
+                                  <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-xs">${escapeHTML(n.predikat || hitungPredikat(rata))}</span>
+                                </td>
+                                <td class="py-3 px-3 text-xs text-slate-500">${escapeHTML(n.catatan_guru || '-')}</td>
+                                ${isGuruOrAdmin ? `
+                                  <td class="py-3 px-3">
+                                    <button data-delete-nilai="${escapeHTML(n.id)}" class="text-xs text-rose-600 hover:underline">Hapus</button>
+                                  </td>
+                                ` : ''}
+                              </tr>
+                            `;
+                          }).join('')}
+                        </tbody>
+                      </table>
+                    </div>
+                  `}
+                </div>
+              </div>
+            `}
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // HALAMAN PANEL ADMIN SEKOLAH
+    // =========================================================================
+    function renderAdmin() {
+      if (!state.currentUser || state.currentUser.role !== 'admin') {
+        return `
+          <div class="max-w-lg mx-auto my-12 px-4">
+            <div class="bg-white rounded-xl border border-slate-200 p-8 text-center space-y-4 shadow-sm">
+              <h2 class="text-xl font-extrabold text-[#1E3A8A]">Area Khusus Administrator Sekolah</h2>
+              <p class="text-sm text-slate-600">Silakan masuk menggunakan Email & Password Admin untuk mengelola profil sekolah, verifikasi SPMB, berita, jadwal, dan akun siswa/guru.</p>
+              <button data-open-login-admin class="px-6 py-2.5 rounded-lg bg-[#1E3A8A] hover:bg-blue-900 text-white text-sm font-bold">
+                Masuk sebagai Admin
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      const spmbFiltered = state.adminSpmbFilter === 'Semua'
+        ? state.spmb
+        : state.spmb.filter((s) => s.status_seleksi === state.adminSpmbFilter);
+
+      return `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <div class="border-b border-slate-200 pb-4">
+            <h1 class="text-2xl font-extrabold text-[#1E3A8A]">Panel Kendali Admin Sekolah</h1>
+            <p class="text-sm text-slate-500 mt-1">Kelola identitas SMP, verifikasi pendaftar SPMB, publikasi berita, akun warga sekolah, dan jadwal pelajaran.</p>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            ${[
+              { id: 'profil', label: 'Identitas & SPMB' },
+              { id: 'spmb', label: `Verifikasi SPMB (${state.spmb.length})` },
+              { id: 'berita', label: `Berita & Galeri (${state.berita.length})` },
+              { id: 'pengguna', label: `Akun Siswa & Guru (${state.pengguna.length})` },
+              { id: 'akademik', label: `Jadwal Pelajaran (${state.jadwal_materi.length})` }
+            ].map((tab) => `
+              <button data-admin-tab="${tab.id}" class="px-4 py-2.5 rounded-lg text-xs font-bold transition ${
+                state.adminTab === tab.id
+                  ? 'bg-[#1E3A8A] text-white'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }">
+                ${tab.label}
+              </button>
+            `).join('')}
+          </div>
+
+          ${state.adminTab === 'profil' ? `
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+              <h2 class="text-lg font-bold text-[#1E3A8A] mb-4">Pengaturan Identitas Sekolah & Saklar SPMB</h2>
+              <form id="form-admin-profil" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Nama Sekolah SMP *</label>
+                  <input name="nama_sekolah" value="${escapeHTML(state.profil.nama_sekolah)}" required class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">NPSN *</label>
+                  <input name="npsn" value="${escapeHTML(state.profil.npsn)}" required class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Status Akreditasi *</label>
+                  <input name="akreditasi" value="${escapeHTML(state.profil.akreditasi)}" required class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Tahun Ajaran Aktif *</label>
+                  <input name="tahun_ajaran" value="${escapeHTML(state.profil.tahun_ajaran)}" required class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kepala Sekolah *</label>
+                  <input name="kepala_sekolah" value="${escapeHTML(state.profil.kepala_sekolah)}" required class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Status Pendaftaran SPMB Online</label>
+                  <select name="status_spmb" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm font-bold">
+                    <option value="true" ${state.profil.status_spmb ? 'selected' : ''}>DIBUKA (Menerima Pendaftaran Baru)</option>
+                    <option value="false" ${!state.profil.status_spmb ? 'selected' : ''}>DITUTUP (Formulir Disembunyikan)</option>
+                  </select>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Lengkap Sekolah *</label>
+                  <input name="alamat" value="${escapeHTML(state.profil.alamat)}" required class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm" />
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Sambutan Kepala Sekolah</label>
+                  <textarea name="sambutan_kepsek" rows="2" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm">${escapeHTML(state.profil.sambutan_kepsek)}</textarea>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Visi Sekolah</label>
+                  <textarea name="visi" rows="3" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm">${escapeHTML(state.profil.visi)}</textarea>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Misi Sekolah</label>
+                  <textarea name="misi" rows="3" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm">${escapeHTML(state.profil.misi)}</textarea>
+                </div>
+                <div class="md:col-span-2 flex justify-end pt-2">
+                  <button type="submit" class="px-6 py-2.5 rounded-lg bg-[#1E3A8A] hover:bg-blue-900 text-white text-sm font-bold">
+                    Simpan Perubahan Profil
+                  </button>
+                </div>
+              </form>
+            </div>
+          ` : ''}
+
+          ${state.adminTab === 'spmb' ? `
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <h2 class="text-lg font-bold text-[#1E3A8A]">Verifikasi Data Pendaftar SPMB</h2>
+                <div class="flex flex-wrap gap-1.5">
+                  ${['Semua', 'Menunggu Verifikasi', 'Diterima', 'Cadangan', 'Ditolak'].map((st) => `
+                    <button data-admin-spmb-filter="${st}" class="px-3 py-1.5 rounded text-xs font-bold ${
+                      state.adminSpmbFilter === st ? 'bg-[#1E3A8A] text-white' : 'bg-slate-100 text-slate-700'
+                    }">
+                      ${st}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              ${spmbFiltered.length === 0 ? `
+                <div class="rounded-lg border border-dashed border-slate-300 p-8 text-center">
+                  <p class="text-sm text-slate-500">Belum ada data pendaftar SPMB pada filter ini.</p>
+                </div>
+              ` : `
+                <div class="space-y-3">
+                  ${spmbFiltered.map((s) => `
+                    <div class="rounded-lg bg-slate-50 border border-slate-200 p-4 space-y-3">
+                      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                        <div>
+                          <div class="flex items-center gap-2">
+                            <span class="text-xs font-extrabold text-[#1E3A8A]">${escapeHTML(s.no_pendaftaran)}</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-bold">Jalur ${escapeHTML(s.jalur_pendaftaran)}</span>
+                            ${renderBadgeStatusSpmb(s.status_seleksi)}
+                          </div>
+                          <h3 class="text-base font-bold text-slate-900 mt-1">${escapeHTML(s.nama_lengkap)} <span class="text-xs font-normal text-slate-500">(NISN: ${escapeHTML(s.nisn)})</span></h3>
+                          <p class="text-xs text-slate-600">Asal SD: <strong>${escapeHTML(s.asal_sd)}</strong> • Nilai Rata-rata: <strong>${escapeHTML(s.nilai_rata_sd)}</strong> • WA Ortu: ${escapeHTML(s.no_hp_ortu)}</p>
+                        </div>
+                        <button data-delete-spmb="${escapeHTML(s.id)}" class="self-start text-xs text-rose-600 hover:underline font-semibold">Hapus Data</button>
+                      </div>
+
+                      <form data-update-spmb-form="${escapeHTML(s.id)}" class="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-2 border-t border-slate-200">
+                        <select name="status_seleksi" class="px-3 py-2 rounded-lg bg-white border border-slate-300 text-xs font-bold">
+                          ${['Menunggu Verifikasi', 'Diterima', 'Cadangan', 'Ditolak'].map((opt) => `
+                            <option value="${opt}" ${s.status_seleksi === opt ? 'selected' : ''}>${opt}</option>
+                          `).join('')}
+                        </select>
+                        <input name="catatan_admin" value="${escapeHTML(s.catatan_admin || '')}" placeholder="Catatan verifikasi panitia..." class="px-3 py-2 rounded-lg bg-white border border-slate-300 text-xs" />
+                        <button type="submit" class="px-4 py-2 rounded-lg bg-[#0284C7] hover:bg-sky-700 text-white text-xs font-bold">
+                          Simpan Keputusan
+                        </button>
+                      </form>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+          ` : ''}
+
+          ${state.adminTab === 'berita' ? `
+            <div class="space-y-5">
+              <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <h2 class="text-lg font-bold text-[#1E3A8A] mb-4">Terbitkan Berita, Pengumuman, atau Galeri Kegiatan</h2>
+                <form id="form-admin-berita" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Judul Publikasi *</label>
+                    <input name="judul" required placeholder="Judul berita atau kegiatan..." class="w-full px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Kategori *</label>
+                    <select name="kategori" class="w-full px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm">
+                      <option value="Berita">Berita</option>
+                      <option value="Pengumuman">Pengumuman</option>
+                      <option value="Prestasi">Prestasi</option>
+                      <option value="Agenda">Agenda</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Kegiatan *</label>
+                    <input name="tanggal_kegiatan" type="date" required value="${new Date().toISOString().split('T')[0]}" class="w-full px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Link Gambar (Opsional)</label>
+                    <input name="gambar_url" placeholder="https://..." class="w-full px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Ringkasan Singkat *</label>
+                    <input name="ringkasan" required placeholder="Ringkasan 1-2 kalimat untuk pratinjau beranda..." class="w-full px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Isi Lengkap Artikel *</label>
+                    <textarea name="isi_konten" rows="3" required placeholder="Tuliskan detail lengkap berita atau pengumuman..." class="w-full px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm"></textarea>
+                  </div>
+                  <div class="md:col-span-2 flex justify-end">
+                    <button type="submit" class="px-5 py-2.5 rounded-lg bg-[#1E3A8A] hover:bg-blue-900 text-white text-xs font-bold">
+                      Publikasikan Sekarang
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-3">
+                <h3 class="text-base font-bold text-[#1E3A8A]">Daftar Publikasi Aktif</h3>
+                ${state.berita.length === 0 ? `
+                  <p class="text-sm text-slate-500">Belum ada berita yang diterbitkan.</p>
+                ` : state.berita.map((b) => `
+                  <div class="rounded-lg bg-slate-50 border border-slate-200 p-3.5 flex items-center justify-between gap-3">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        ${renderKategoriBadge(b.kategori)}
+                        <span class="text-xs text-slate-400">${escapeHTML(b.tanggal_kegiatan || '')}</span>
+                      </div>
+                      <h4 class="text-sm font-bold text-slate-900 mt-1">${escapeHTML(b.judul)}</h4>
+                    </div>
+                    <button data-delete-berita="${escapeHTML(b.id)}" class="px-3 py-1.5 rounded bg-rose-50 text-rose-600 text-xs font-bold hover:bg-rose-100">Hapus</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${state.adminTab === 'pengguna' ? `
+            <div class="space-y-5">
+              <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <h2 class="text-lg font-bold text-[#1E3A8A] mb-1">Tambah Akun Siswa atau Guru Baru</h2>
+                <p class="text-xs text-slate-500 mb-4">Akun ini digunakan untuk login pada Portal Akademik tanpa perlu verifikasi email.</p>
+                <form id="form-admin-pengguna" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Peran *</label>
+                    <select name="peran" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm">
+                      <option value="siswa">Siswa</option>
+                      <option value="guru">Guru</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">NISN (Siswa) / NIP (Guru) *</label>
+                    <input name="username" required placeholder="Contoh: 0098765432" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Password Login *</label>
+                    <input name="password" required placeholder="Password awal" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap *</label>
+                    <input name="nama_lengkap" required placeholder="Nama lengkap & gelar" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Kelas (Siswa) / Mapel (Guru) *</label>
+                    <input name="kelas_atau_mapel" required placeholder="VII-A atau Matematika" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div class="sm:col-span-2 lg:col-span-5 flex justify-end pt-1">
+                    <button type="submit" class="px-5 py-2.5 rounded-lg bg-[#1E3A8A] hover:bg-blue-900 text-white text-xs font-bold">
+                      Daftarkan Akun
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-3">
+                <h3 class="text-base font-bold text-[#1E3A8A]">Daftar Akun Warga Sekolah</h3>
+                ${state.pengguna.length === 0 ? `
+                  <p class="text-sm text-slate-500">Belum ada akun siswa atau guru terdaftar.</p>
+                ` : `
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                      <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
+                          <th class="py-2.5 px-3">Peran</th>
+                          <th class="py-2.5 px-3">NISN / NIP</th>
+                          <th class="py-2.5 px-3">Nama Lengkap</th>
+                          <th class="py-2.5 px-3">Kelas / Mapel</th>
+                          <th class="py-2.5 px-3">Password</th>
+                          <th class="py-2.5 px-3">Status</th>
+                          <th class="py-2.5 px-3">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-200">
+                        ${state.pengguna.map((u) => `
+                          <tr>
+                            <td class="py-2.5 px-3">
+                              <span class="px-2 py-0.5 rounded text-xs font-bold uppercase ${
+                                u.peran === 'guru' ? 'bg-sky-100 text-sky-800' : 'bg-blue-100 text-blue-800'
+                              }">${escapeHTML(u.peran)}</span>
+                            </td>
+                            <td class="py-2.5 px-3 font-mono text-xs">${escapeHTML(u.username)}</td>
+                            <td class="py-2.5 px-3 font-bold text-slate-900">${escapeHTML(u.nama_lengkap)}</td>
+                            <td class="py-2.5 px-3 text-slate-600">${escapeHTML(u.kelas_atau_mapel || '-')}</td>
+                            <td class="py-2.5 px-3 font-mono text-xs text-slate-500">${escapeHTML(u.password)}</td>
+                            <td class="py-2.5 px-3">
+                              <button data-toggle-user="${escapeHTML(u.id)}" data-current-aktif="${u.aktif}" class="px-2.5 py-0.5 rounded text-xs font-bold ${
+                                u.aktif ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'
+                              }">
+                                ${u.aktif ? 'Aktif' : 'Nonaktif'}
+                              </button>
+                            </td>
+                            <td class="py-2.5 px-3">
+                              <button data-delete-user="${escapeHTML(u.id)}" class="text-xs text-rose-600 hover:underline">Hapus</button>
+                            </td>
+                          </tr>
+                        `).join('')}
+                      </tbody>
+                    </table>
+                  </div>
+                `}
+              </div>
+            </div>
+          ` : ''}
+
+          ${state.adminTab === 'akademik' ? `
+            <div class="space-y-5">
+              <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <h2 class="text-lg font-bold text-[#1E3A8A] mb-4">Tambah Jadwal Pelajaran Kelas</h2>
+                <form id="form-admin-jadwal" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Tingkat Kelas *</label>
+                    <select name="kelas" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm">
+                      <option value="VII">Kelas VII</option>
+                      <option value="VIII">Kelas VIII</option>
+                      <option value="IX">Kelas IX</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Hari *</label>
+                    <select name="hari" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm">
+                      <option value="Senin">Senin</option>
+                      <option value="Selasa">Selasa</option>
+                      <option value="Rabu">Rabu</option>
+                      <option value="Kamis">Kamis</option>
+                      <option value="Jumat">Jumat</option>
+                      <option value="Sabtu">Sabtu</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Jam Pelajaran *</label>
+                    <input name="jam_pelajaran" required placeholder="07:30 - 09:00" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Mata Pelajaran *</label>
+                    <input name="mata_pelajaran" required placeholder="Contoh: Ilmu Pengetahuan Alam" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Guru Pengampu *</label>
+                    <input name="nama_guru" required placeholder="Nama guru..." class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Ruang Kelas / Keterangan</label>
+                    <input name="deskripsi_atau_link" placeholder="Ruang VII-B" class="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-sm" />
+                  </div>
+                  <div class="sm:col-span-2 lg:col-span-3 flex justify-end">
+                    <button type="submit" class="px-5 py-2.5 rounded-lg bg-[#1E3A8A] hover:bg-blue-900 text-white text-xs font-bold">
+                      Tambah Jadwal
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-3">
+                <h3 class="text-base font-bold text-[#1E3A8A]">Semua Jadwal & Materi Tercatat</h3>
+                ${state.jadwal_materi.length === 0 ? `
+                  <p class="text-sm text-slate-500">Belum ada data jadwal atau materi.</p>
+                ` : state.jadwal_materi.map((jm) => `
+                  <div class="rounded-lg bg-slate-50 border border-slate-200 p-3.5 flex items-center justify-between gap-3">
+                    <div>
+                      <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-xs font-bold mr-1.5">${escapeHTML(jm.tipe)} • Kelas ${escapeHTML(jm.kelas)}</span>
+                      <span class="text-xs text-slate-500">${escapeHTML(jm.hari || '')} (${escapeHTML(jm.jam_pelajaran || '')})</span>
+                      <div class="text-sm font-bold text-slate-900 mt-1">${escapeHTML(jm.mata_pelajaran)} — ${escapeHTML(jm.judul_materi || jm.nama_guru)}</div>
+                    </div>
+                    <button data-delete-jm="${escapeHTML(jm.id)}" class="text-xs text-rose-600 hover:underline font-bold">Hapus</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // MODALS (DETAIL BERITA & LOGIN HYBRID)
+    // =========================================================================
+    function renderModals() {
+      let html = '';
+
+      if (state.selectedBeritaModal) {
+        const b = state.selectedBeritaModal;
+        html += `
+          <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl max-w-2xl w-full max-h-[88vh] overflow-y-auto p-6 md:p-8 shadow-2xl space-y-4">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  ${renderKategoriBadge(b.kategori)}
+                  <span class="text-xs text-slate-500">${escapeHTML(formatTanggalIndo(b.tanggal_kegiatan))}</span>
+                </div>
+                <button data-close-berita class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">
+                  <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+              </div>
+              <h2 class="text-xl md:text-2xl font-extrabold text-[#1E3A8A] leading-snug">${escapeHTML(b.judul)}</h2>
+              ${b.gambar_url ? `<img src="${escapeHTML(b.gambar_url)}" class="w-full max-h-64 object-cover rounded-lg border border-slate-200" onerror="this.style.display='none'" />` : ''}
+              <p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${escapeHTML(b.isi_konten || b.ringkasan)}</p>
+              <div class="pt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+                <span>Diterbitkan oleh: ${escapeHTML(b.penulis || 'Admin Sekolah')}</span>
+                <button data-close-berita class="px-4 py-2 rounded-lg bg-[#1E3A8A] text-white font-bold">Tutup</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (state.showLoginModal) {
+        html += `
+          <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl max-w-md w-full p-6 md:p-7 shadow-2xl space-y-5">
+              <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div>
+                  <h2 class="text-lg font-extrabold text-[#1E3A8A]">Masuk Portal Sekolah</h2>
+                  <p class="text-xs text-slate-500">Pilih peran akun Anda untuk melanjutkan</p>
+                </div>
+                <button data-close-login class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">
+                  <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <div class="grid grid-cols-2 gap-1.5 p-1 rounded-lg bg-slate-100">
+                <button data-login-tab="warga" class="py-2 rounded text-xs font-bold transition ${
+                  state.loginTab === 'warga' ? 'bg-[#1E3A8A] text-white' : 'text-slate-600'
+                }">
+                  Siswa & Guru
+                </button>
+                <button data-login-tab="admin" class="py-2 rounded text-xs font-bold transition ${
+                  state.loginTab === 'admin' ? 'bg-[#1E3A8A] text-white' : 'text-slate-600'
+                }">
+                  Admin Sekolah
+                </button>
+              </div>
+
+              ${state.loginTab === 'warga' ? `
+                <form id="form-login-warga" class="space-y-3.5">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">NISN (Siswa) atau NIP/Kode (Guru)</label>
+                    <input name="username" required placeholder="Masukkan NISN atau NIP..." class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+                    <input name="password" type="password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                  </div>
+                  <button type="submit" class="w-full py-2.5 rounded-lg bg-[#1E3A8A] hover:bg-blue-900 text-white font-bold text-sm transition">
+                    Masuk ke Portal Akademik
+                  </button>
+                </form>
+
+                ${IS_PREVIEW ? `
+                  <div class="pt-3 border-t border-slate-200 space-y-2">
+                    <div class="text-[11px] font-bold text-amber-700 uppercase">Quick Login (Mode Preview):</div>
+                    <div class="grid grid-cols-2 gap-2">
+                      <button data-quick-login="siswa" class="py-2 px-3 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold">
+                        Coba Siswa (Ananda)
+                      </button>
+                      <button data-quick-login="guru" class="py-2 px-3 rounded-lg bg-sky-50 hover:bg-sky-100 border border-sky-300 text-sky-900 text-xs font-bold">
+                        Coba Guru (Pak Budi)
+                      </button>
+                    </div>
+                  </div>
+                ` : ''}
+              ` : `
+                <form id="form-login-admin" class="space-y-3.5">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Email Administrator</label>
+                    <input name="email" type="email" required placeholder="admin@sekolah.sch.id" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Password Admin</label>
+                    <input name="password" type="password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                  </div>
+                  <button type="submit" class="w-full py-2.5 rounded-lg bg-[#1E3A8A] hover:bg-blue-900 text-white font-bold text-sm transition">
+                    Masuk Panel Admin
+                  </button>
+                </form>
+
+                ${IS_PREVIEW ? `
+                  <div class="pt-3 border-t border-slate-200">
+                    <button data-quick-login="admin" class="w-full py-2 px-3 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold">
+                      Quick Login Admin (Mode Preview)
+                    </button>
+                  </div>
+                ` : ''}
+              `}
+            </div>
+          </div>
+        `;
+      }
+
+      return html;
+    }
+
+    // =========================================================================
+    // RENDER UTAMA (TOP BAR + MAIN NAVBAR + CONTENT + FOOTER)
+    // =========================================================================
+    function render() {
+      const root = document.getElementById('smp-app-root');
+      if (!root) return;
+
+      const topNavItems = [
+        { id: 'beranda', label: 'Beranda', sub: 'Home' },
+        { id: 'profil', label: 'Tentang Kami', sub: 'Profil & Guru' },
+        { id: 'spmb', label: 'Pendaftaran', sub: 'SPMB Online' },
+        { id: 'akademik', label: 'Akademik', sub: 'E-Learning & Nilai' },
+        { id: 'berita', label: 'Info Terbaru', sub: 'Berita & Galeri' }
+      ];
+
+      if (state.currentUser?.role === 'admin') {
+        topNavItems.push({ id: 'admin', label: 'Panel Admin', sub: 'Kelola Web' });
+      }
+
+      let activeContent = '';
+      if (state.activeMenu === 'beranda') activeContent = renderBeranda();
+      else if (state.activeMenu === 'profil') activeContent = renderProfil();
+      else if (state.activeMenu === 'berita') activeContent = renderBerita();
+      else if (state.activeMenu === 'spmb') activeContent = renderSpmb();
+      else if (state.activeMenu === 'akademik') activeContent = renderAkademik();
+      else if (state.activeMenu === 'admin') activeContent = renderAdmin();
+
+      root.innerHTML = `
+        <div class="min-h-screen flex flex-col">
+          <!-- Banner Mode Preview (Hanya tampil saat IS_PREVIEW === true) -->
+          ${IS_PREVIEW ? `
+            <div class="bg-amber-500 text-slate-950 px-4 py-1.5 text-xs font-bold flex flex-wrap items-center justify-between gap-2 z-40">
+              <div class="flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                <span>Mode Preview Aktif — Data simulasi lokal.</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button data-quick-login="admin" class="underline hover:text-white">Quick Admin</button>
+                <span>•</span>
+                <button data-quick-login="guru" class="underline hover:text-white">Quick Guru</button>
+                <span>•</span>
+                <button data-quick-login="siswa" class="underline hover:text-white">Quick Siswa</button>
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- 1. TOP UTILITY BAR BIRU CERAH (MIRIP GAMBAR REFERENSI) -->
+          <div class="bg-[#0095D9] text-white text-[11px] sm:text-xs py-1.5 px-4 border-b border-sky-400/40">
+            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap">
+                <span class="font-bold">NPSN: ${escapeHTML(state.profil.npsn)}</span>
+                <button data-nav="spmb" class="hover:underline uppercase font-semibold">Info SPMB</button>
+                <button data-nav="profil" class="hover:underline uppercase font-semibold hidden sm:inline">Adiwiyata & Profil</button>
+                <button data-nav="berita" class="hover:underline font-semibold">Pengumuman</button>
+              </div>
+              <div class="flex items-center gap-3">
+                ${state.loading ? `<span class="text-amber-200 font-semibold">Memuat data...</span>` : ''}
+                <button id="btn-install-pwa" class="inline-flex items-center gap-1 bg-white/15 hover:bg-white/25 px-2.5 py-0.5 rounded font-semibold transition">
+                  <i data-lucide="download" class="w-3 h-3"></i>
+                  <span>Install App</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. MAIN TOP NAVIGATION BAR BIRU TUA NAVY (MENU ADA DI BAGIAN ATAS!) -->
+          <header class="sticky top-0 z-30 bg-[#1E3A8A] text-white shadow-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="flex items-center justify-between h-16 md:h-20 gap-4">
+                <!-- Logo & Nama Sekolah -->
+                <button data-nav="beranda" class="flex items-center gap-3 text-left min-w-0 group">
+                  <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white text-[#1E3A8A] flex items-center justify-center font-extrabold text-sm md:text-base shadow shrink-0 border-2 border-sky-300">
+                    SMP
+                  </div>
+                  <div class="min-w-0">
+                    <div class="text-sm sm:text-base md:text-lg font-extrabold tracking-wide uppercase truncate font-heading group-hover:text-amber-300 transition">
+                      ${escapeHTML(state.profil.nama_sekolah)}
+                    </div>
+                    <div class="text-[10px] sm:text-[11px] text-sky-200 truncate">
+                      Akreditasi ${escapeHTML(state.profil.akreditasi)} • Portal Resmi Sekolah
+                    </div>
+                  </div>
+                </button>
+
+                <!-- Menu Horizontal Atas Desktop (Dengan Subjudul Bilingual ala Gambar Referensi) -->
+                <nav class="hidden lg:flex items-center gap-1">
+                  ${topNavItems.map((item) => `
+                    <button data-nav="${item.id}" class="px-3.5 py-2 rounded text-left transition border-b-2 ${
+                      state.activeMenu === item.id
+                        ? 'bg-blue-900/90 border-amber-400 text-white'
+                        : 'border-transparent text-blue-100 hover:bg-blue-900/50 hover:text-white'
+                    }">
+                      <div class="text-xs font-bold leading-tight">${item.label}</div>
+                      <div class="text-[10px] text-sky-300 leading-tight mt-0.5">${item.sub}</div>
+                    </button>
+                  `).join('')}
+                </nav>
+
+                <!-- Tombol Masuk / Profil Akun & Hamburger Mobile -->
+                <div class="flex items-center gap-2 shrink-0">
+                  ${state.currentUser ? `
+                    <div class="hidden sm:flex items-center gap-2 bg-blue-950/70 border border-blue-700 px-3 py-1.5 rounded-lg">
+                      <div class="text-right">
+                        <div class="text-xs font-bold text-white max-w-[120px] truncate">${escapeHTML(state.currentUser.nama_lengkap)}</div>
+                        <div class="text-[10px] text-amber-300 uppercase font-bold">${escapeHTML(state.currentUser.role)}</div>
+                      </div>
+                      <button data-logout class="px-2.5 py-1 rounded bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold">
+                        Keluar
+                      </button>
+                    </div>
+                  ` : `
+                    <button data-open-login class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#0095D9] hover:bg-sky-500 text-white text-xs font-bold shadow-sm transition">
+                      <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+                      <span>Masuk Portal</span>
+                    </button>
+                  `}
+
+                  <!-- Tombol Menu Mobile -->
+                  <button id="btn-toggle-mobile-menu" aria-label="Buka Menu" class="lg:hidden p-2 rounded bg-blue-900 hover:bg-blue-800 text-white">
+                    <i data-lucide="${state.mobileMenuOpen ? 'x' : 'menu'}" class="w-5 h-5"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dropdown Menu Mobile (Saat dibuka di layar HP/Tablet) -->
+            ${state.mobileMenuOpen ? `
+              <div class="lg:hidden bg-[#172D6B] border-t border-blue-800 px-4 py-3 space-y-1.5">
+                ${topNavItems.map((item) => `
+                  <button data-nav="${item.id}" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded text-left ${
+                    state.activeMenu === item.id
+                      ? 'bg-[#0095D9] text-white font-bold'
+                      : 'text-blue-100 hover:bg-blue-900'
+                  }">
+                    <span class="text-sm font-semibold">${item.label}</span>
+                    <span class="text-xs text-sky-200">${item.sub}</span>
+                  </button>
+                `).join('')}
+                ${state.currentUser ? `
+                  <div class="pt-2 border-t border-blue-800 flex items-center justify-between px-2">
+                    <span class="text-xs text-sky-200">${escapeHTML(state.currentUser.nama_lengkap)} (${escapeHTML(state.currentUser.role)})</span>
+                    <button data-logout class="px-3 py-1.5 rounded bg-rose-600 text-white text-xs font-bold">Keluar</button>
+                  </div>
+                ` : ''}
+              </div>
+            ` : ''}
+          </header>
+
+          <!-- 3. KONTEN UTAMA -->
+          <main class="flex-1 bg-white">
+            ${activeContent}
+          </main>
+
+          <!-- 4. FOOTER RESMI SEKOLAH -->
+          <footer class="bg-[#0B1120] text-slate-400 text-xs py-6 px-4 border-t border-slate-800">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+              <div>
+                <span class="text-white font-bold">${escapeHTML(state.profil.nama_sekolah)}</span> — ${escapeHTML(state.profil.alamat)}
+              </div>
+              <div>
+                &copy; ${new Date().getFullYear()} Portal Resmi Sekolah & SPMB Online.
+              </div>
+            </div>
+          </footer>
+        </div>
+
+        <!-- Toast Notification -->
+        ${state.toast ? `
+          <div class="fixed bottom-5 right-5 z-[60] max-w-sm px-4 py-3 rounded-lg shadow-xl border text-xs font-bold flex items-center gap-2.5 ${
+            state.toast.type === 'error'
+              ? 'bg-rose-600 text-white border-rose-500'
+              : 'bg-slate-900 text-white border-slate-700'
+          }">
+            <i data-lucide="${state.toast.type === 'error' ? 'alert-circle' : 'check-circle'}" class="w-4 h-4 shrink-0"></i>
+            <span>${escapeHTML(state.toast.message)}</span>
+          </div>
+        ` : ''}
+
+        ${renderModals()}
+      `;
+
+      // Pasang hover pause pada Hero Carousel agar nyaman dibaca saat kursor diarahkan
+      const carouselEl = document.getElementById('hero-carousel-wrapper');
+      if (carouselEl) {
+        carouselEl.onmouseenter = () => { state.isCarouselPaused = true; };
+        carouselEl.onmouseleave = () => { state.isCarouselPaused = false; };
+      }
+
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    // =========================================================================
+    // EVENT DELEGATION & INTERAKSI PENGGUNA
+    // =========================================================================
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      state.deferredInstallPrompt = e;
+    });
+
+    document.addEventListener('click', async (e) => {
+      const target = e.target.closest('button, [data-nav], [data-open-berita]');
+      if (!target) return;
+
+      // Kontrol Carousel Slide Manual
+      if (target.id === 'btn-prev-slide') {
+        goToSlide(state.currentSlide - 1);
+        return;
+      }
+      if (target.id === 'btn-next-slide') {
+        goToSlide(state.currentSlide + 1);
+        return;
+      }
+      if (target.dataset.slideDot !== undefined) {
+        goToSlide(Number(target.dataset.slideDot));
+        return;
+      }
+
+      // Toggle Menu Mobile
+      if (target.id === 'btn-toggle-mobile-menu') {
+        state.mobileMenuOpen = !state.mobileMenuOpen;
+        render();
+        return;
+      }
+
+      // Navigasi Menu Utama
+      if (target.dataset.nav) {
+        state.activeMenu = target.dataset.nav;
+        state.mobileMenuOpen = false;
+        const root = document.getElementById('smp-app-root');
+        if (root) root.scrollTop = 0;
+        render();
+        return;
+      }
+
+      // Install PWA
+      if (target.id === 'btn-install-pwa') {
+        if (state.deferredInstallPrompt) {
+          state.deferredInstallPrompt.prompt();
+          await state.deferredInstallPrompt.userChoice;
+          state.deferredInstallPrompt = null;
+        } else {
+          showToast('Untuk menginstal: klik menu browser (⋮) lalu pilih "Tambahkan ke Layar Utama / Install App".');
+        }
+        return;
+      }
+
+      // Login & Logout
+      if (target.dataset.openLogin !== undefined) {
+        state.showLoginModal = true;
+        state.loginTab = 'warga';
+        render();
+        return;
+      }
+      if (target.dataset.openLoginAdmin !== undefined) {
+        state.showLoginModal = true;
+        state.loginTab = 'admin';
+        render();
+        return;
+      }
+      if (target.dataset.closeLogin !== undefined) {
+        state.showLoginModal = false;
+        render();
+        return;
+      }
+      if (target.dataset.loginTab) {
+        state.loginTab = target.dataset.loginTab;
+        render();
+        return;
+      }
+      if (target.dataset.logout !== undefined) {
+        await handleLogout();
+        return;
+      }
+
+      // Quick Login (Hanya berjalan jika IS_PREVIEW === true)
+      if (target.dataset.quickLogin && IS_PREVIEW) {
+        const role = target.dataset.quickLogin;
+        if (role === 'admin') {
+          await handleAdminLogin('admin@smp.sch.id', 'preview');
+        } else if (role === 'guru') {
+          await handleWargaLogin('1985041201', '123');
+        } else if (role === 'siswa') {
+          await handleWargaLogin('0098765432', '123');
+        }
+        return;
+      }
+
+      // Filter Berita & Modal Baca Berita
+      if (target.dataset.filterBerita) {
+        state.beritaFilter = target.dataset.filterBerita;
+        render();
+        return;
+      }
+      if (target.dataset.openBerita) {
+        state.selectedBeritaModal = state.berita.find((b) => b.id === target.dataset.openBerita) || null;
+        render();
+        return;
+      }
+      if (target.dataset.closeBerita !== undefined) {
+        state.selectedBeritaModal = null;
+        render();
+        return;
+      }
+
+      // Tab SPMB
+      if (target.dataset.spmbTab) {
+        state.spmbTab = target.dataset.spmbTab;
+        render();
+        return;
+      }
+      if (target.dataset.closeReceipt !== undefined) {
+        state.lastSpmbReceipt = null;
+        render();
+        return;
+      }
+
+      // Tab & Filter Akademik
+      if (target.dataset.akademikTab) {
+        state.akademikTab = target.dataset.akademikTab;
+        render();
+        return;
+      }
+      if (target.dataset.kelasFilter) {
+        state.kelasFilter = target.dataset.kelasFilter;
+        render();
+        return;
+      }
+
+      // Tab & Filter Admin
+      if (target.dataset.adminTab) {
+        state.adminTab = target.dataset.adminTab;
+        render();
+        return;
+      }
+      if (target.dataset.adminSpmbFilter) {
+        state.adminSpmbFilter = target.dataset.adminSpmbFilter;
+        render();
+        return;
+      }
+
+      // Aksi Hapus & Toggle
+      if (target.dataset.deleteSpmb) {
+        await deleteSpmb(target.dataset.deleteSpmb);
+        return;
+      }
+      if (target.dataset.deleteBerita) {
+        await deleteBerita(target.dataset.deleteBerita);
+        return;
+      }
+      if (target.dataset.toggleUser) {
+        const isAktif = target.dataset.currentAktif === 'true';
+        await toggleAktifPengguna(target.dataset.toggleUser, isAktif);
+        return;
+      }
+      if (target.dataset.deleteUser) {
+        await deletePengguna(target.dataset.deleteUser);
+        return;
+      }
+      if (target.dataset.deleteJm) {
+        await deleteJadwalMateri(target.dataset.deleteJm);
+        return;
+      }
+      if (target.dataset.deleteNilai) {
+        await deleteNilaiAkademik(target.dataset.deleteNilai);
+        return;
+      }
+    });
+
+    // Pencarian Real-time
+    document.addEventListener('input', (e) => {
+      if (e.target.id === 'input-search-guru') {
+        state.guruSearch = e.target.value;
+        render();
+        const el = document.getElementById('input-search-guru');
+        if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+      }
+      if (e.target.id === 'input-search-berita') {
+        state.beritaSearch = e.target.value;
+        render();
+        const el = document.getElementById('input-search-berita');
+        if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+      }
+    });
+
+    // Penanganan Semua Form Submit
+    document.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const fd = new FormData(form);
+
+      if (form.id === 'form-login-admin') {
+        await handleAdminLogin(fd.get('email'), fd.get('password'));
+      } else if (form.id === 'form-login-warga') {
+        await handleWargaLogin(fd.get('username'), fd.get('password'));
+      } else if (form.id === 'form-spmb') {
+        await submitPendaftaranSpmb({
+          nisn: fd.get('nisn'),
+          nama_lengkap: fd.get('nama_lengkap'),
+          jenis_kelamin: fd.get('jenis_kelamin'),
+          asal_sd: fd.get('asal_sd'),
+          jalur_pendaftaran: fd.get('jalur_pendaftaran'),
+          nilai_rata_sd: fd.get('nilai_rata_sd'),
+          no_hp_ortu: fd.get('no_hp_ortu'),
+          alamat: fd.get('alamat')
+        });
+        form.reset();
+      } else if (form.id === 'form-cek-spmb') {
+        state.spmbCekQuery = fd.get('query');
+        await cekStatusSpmb(state.spmbCekQuery);
+      } else if (form.id === 'form-admin-profil') {
+        await saveProfilSekolah({
+          nama_sekolah: fd.get('nama_sekolah'),
+          npsn: fd.get('npsn'),
+          akreditasi: fd.get('akreditasi'),
+          tahun_ajaran: fd.get('tahun_ajaran'),
+          kepala_sekolah: fd.get('kepala_sekolah'),
+          status_spmb: fd.get('status_spmb') === 'true',
+          alamat: fd.get('alamat'),
+          sambutan_kepsek: fd.get('sambutan_kepsek'),
+          visi: fd.get('visi'),
+          misi: fd.get('misi')
+        });
+      } else if (form.dataset.updateSpmbForm) {
+        await updateStatusSpmb(
+          form.dataset.updateSpmbForm,
+          fd.get('status_seleksi'),
+          fd.get('catatan_admin')
+        );
+      } else if (form.id === 'form-admin-berita') {
+        await addBerita({
+          judul: fd.get('judul'),
+          kategori: fd.get('kategori'),
+          tanggal_kegiatan: fd.get('tanggal_kegiatan'),
+          gambar_url: fd.get('gambar_url'),
+          ringkasan: fd.get('ringkasan'),
+          isi_konten: fd.get('isi_konten'),
+          penulis: state.currentUser?.nama_lengkap || 'Admin Sekolah'
+        });
+        form.reset();
+      } else if (form.id === 'form-admin-pengguna') {
+        await addPengguna({
+          peran: fd.get('peran'),
+          username: fd.get('username').trim(),
+          password: fd.get('password').trim(),
+          nama_lengkap: fd.get('nama_lengkap').trim(),
+          kelas_atau_mapel: fd.get('kelas_atau_mapel').trim()
+        });
+        form.reset();
+      } else if (form.id === 'form-admin-jadwal') {
+        await addJadwalMateri({
+          tipe: 'Jadwal',
+          kelas: fd.get('kelas'),
+          hari: fd.get('hari'),
+          jam_pelajaran: fd.get('jam_pelajaran'),
+          mata_pelajaran: fd.get('mata_pelajaran'),
+          nama_guru: fd.get('nama_guru'),
+          judul_materi: fd.get('mata_pelajaran'),
+          deskripsi_atau_link: fd.get('deskripsi_atau_link')
+        });
+        form.reset();
+      } else if (form.id === 'form-tambah-materi') {
+        await addJadwalMateri({
+          tipe: 'Materi',
+          kelas: fd.get('kelas'),
+          hari: '-',
+          jam_pelajaran: 'E-Learning',
+          mata_pelajaran: fd.get('mata_pelajaran'),
+          nama_guru: state.currentUser?.nama_lengkap || 'Guru',
+          judul_materi: fd.get('judul_materi'),
+          deskripsi_atau_link: fd.get('deskripsi_atau_link')
+        });
+        form.reset();
+      } else if (form.id === 'form-input-nilai') {
+        await saveNilaiAkademik({
+          siswa_id: fd.get('siswa_id'),
+          mata_pelajaran: fd.get('mata_pelajaran'),
+          semester: fd.get('semester'),
+          nilai_tugas: fd.get('nilai_tugas'),
+          nilai_uts: fd.get('nilai_uts'),
+          nilai_uas: fd.get('nilai_uas'),
+          catatan_guru: fd.get('catatan_guru')
+        });
+        form.reset();
+      }
+    });
+
+    // Inisialisasi Aplikasi Pertama Kali
+    render();
+    if (!IS_PREVIEW) {
+      loadAllSupabaseData();
+    }
+  </script>
+</body>
+</html>
